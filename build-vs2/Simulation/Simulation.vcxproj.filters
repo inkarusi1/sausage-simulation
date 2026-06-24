@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\CollisionDetection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\Constraints.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\CubicSDFCollisionDetection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\DistanceFieldCollisionDetection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\IDFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\LineModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\NeighborhoodSearchSpatialHashing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\RigidBodyGeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\Simulation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\SimulationModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\TetModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\TimeManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\TimeStep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\TimeStepController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\TriangleModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\BoundingSphereHierarchy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\AABB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\CollisionDetection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\Constraints.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\CubicSDFCollisionDetection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\DistanceFieldCollisionDetection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\IDFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\LineModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\NeighborhoodSearchSpatialHashing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\ParticleData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\RigidBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\RigidBodyGeometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\Simulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\SimulationModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\TetModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\TimeManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\TimeStep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\TimeStepController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\TriangleModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\BoundingSphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\BoundingSphereHierarchy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\kdTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\kdTree.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\master\vr\final2\PositionBasedDynamics\Simulation\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{9EB59DE8-1D39-33C1-896B-5D70EC3E216C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{EC0B62F7-962A-3165-983F-6EDC03AFFA29}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

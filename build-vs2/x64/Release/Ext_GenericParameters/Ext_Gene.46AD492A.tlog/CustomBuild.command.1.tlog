@@ -1,0 +1,134 @@
+^D:\MASTER\VR\FINAL2\POSITIONBASEDDYNAMICS\BUILD-VS2\CMAKEFILES\C81A35E4A8A0BEC3D0F0C70FC060D056\EXT_GENERICPARAMETERS-MKDIR.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -Dcfgdir=/Release -P D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/tmp/Ext_GenericParameters-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/src/Ext_GenericParameters-stamp/Release/Ext_GenericParameters-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\MASTER\VR\FINAL2\POSITIONBASEDDYNAMICS\BUILD-VS2\CMAKEFILES\C81A35E4A8A0BEC3D0F0C70FC060D056\EXT_GENERICPARAMETERS-DOWNLOAD.RULE
+setlocal
+cd D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\src
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/tmp/Ext_GenericParameters-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/src/Ext_GenericParameters-stamp/Release/Ext_GenericParameters-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\MASTER\VR\FINAL2\POSITIONBASEDDYNAMICS\BUILD-VS2\CMAKEFILES\C81A35E4A8A0BEC3D0F0C70FC060D056\EXT_GENERICPARAMETERS-UPDATE.RULE
+setlocal
+cd D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\src\Ext_GenericParameters
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -Dcan_fetch=YES -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/tmp/Ext_GenericParameters-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\MASTER\VR\FINAL2\POSITIONBASEDDYNAMICS\BUILD-VS2\CMAKEFILES\C81A35E4A8A0BEC3D0F0C70FC060D056\EXT_GENERICPARAMETERS-PATCH.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/src/Ext_GenericParameters-stamp/Release/Ext_GenericParameters-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\MASTER\VR\FINAL2\POSITIONBASEDDYNAMICS\BUILD-VS2\CMAKEFILES\C81A35E4A8A0BEC3D0F0C70FC060D056\EXT_GENERICPARAMETERS-CONFIGURE.RULE
+setlocal
+cd D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\src\Ext_GenericParameters-build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -DCMAKE_BUILD_TYPE= -DCMAKE_INSTALL_PREFIX:PATH=D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters -DGENERICPARAMETERS_NO_TESTS:BOOL=1 -DCMAKE_POLICY_VERSION_MINIMUM=3.10 "-GVisual Studio 17 2022" -Ax64 "-DCMAKE_GENERATOR_INSTANCE:INTERNAL=C:/Program Files/Microsoft Visual Studio/2022/Professional" -S D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/src/Ext_GenericParameters -B D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/src/Ext_GenericParameters-build
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/src/Ext_GenericParameters-stamp/Release/Ext_GenericParameters-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\MASTER\VR\FINAL2\POSITIONBASEDDYNAMICS\BUILD-VS2\CMAKEFILES\C81A35E4A8A0BEC3D0F0C70FC060D056\EXT_GENERICPARAMETERS-BUILD.RULE
+setlocal
+cd D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\src\Ext_GenericParameters-build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" --build . --config Release
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/src/Ext_GenericParameters-stamp/Release/Ext_GenericParameters-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\MASTER\VR\FINAL2\POSITIONBASEDDYNAMICS\BUILD-VS2\CMAKEFILES\C81A35E4A8A0BEC3D0F0C70FC060D056\EXT_GENERICPARAMETERS-INSTALL.RULE
+setlocal
+cd D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\src\Ext_GenericParameters-build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" --build . --config Release --target install
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/src/Ext_GenericParameters-stamp/Release/Ext_GenericParameters-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\MASTER\VR\FINAL2\POSITIONBASEDDYNAMICS\BUILD-VS2\CMAKEFILES\45578202EA999575D9ACBAF7E234129F\EXT_GENERICPARAMETERS-COMPLETE.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E make_directory D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/Release
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/Release/Ext_GenericParameters-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/src/Ext_GenericParameters-stamp/Release/Ext_GenericParameters-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\MASTER\VR\FINAL2\POSITIONBASEDDYNAMICS\BUILD-VS2\CMAKEFILES\0C06A94D533509C22DCEFA9F57D37633\EXT_GENERICPARAMETERS.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\MASTER\VR\FINAL2\POSITIONBASEDDYNAMICS\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/master/vr/final2/PositionBasedDynamics -BD:/master/vr/final2/PositionBasedDynamics/build-vs2 --check-stamp-file D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

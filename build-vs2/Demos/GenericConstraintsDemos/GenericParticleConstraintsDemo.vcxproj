@@ -1,0 +1,422 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{44E81FCB-1DA7-32B8-8BC8-288C08D70553}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>GenericParticleConstraintsDemo</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\master\vr\final2\PositionBasedDynamics\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">GenericParticleConstraintsDemo.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">GenericParticleConstraintsDemo_d</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\master\vr\final2\PositionBasedDynamics\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">GenericParticleConstraintsDemo.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">GenericParticleConstraintsDemo</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\master\vr\final2\PositionBasedDynamics\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">GenericParticleConstraintsDemo.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">GenericParticleConstraintsDemo_ms</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\master\vr\final2\PositionBasedDynamics\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">GenericParticleConstraintsDemo.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">GenericParticleConstraintsDemo_rd</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\master\vr\final2\PositionBasedDynamics;D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\include;D:\master\vr\final2\PositionBasedDynamics\extern\eigen;D:\master\vr\final2\PositionBasedDynamics\extern\freeglut\include;D:\master\vr\final2\PositionBasedDynamics\extern\glew\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\..\deps;D:\master\vr\final2\PositionBasedDynamics\extern\imgui;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Discregrid\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OpenMPSupport>true</OpenMPSupport>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;USE_DOUBLE;IMGUI_IMPL_OPENGL_LOADER_GLAD;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;USE_DOUBLE;IMGUI_IMPL_OPENGL_LOADER_GLAD;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\master\vr\final2\PositionBasedDynamics;D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\include;D:\master\vr\final2\PositionBasedDynamics\extern\eigen;D:\master\vr\final2\PositionBasedDynamics\extern\freeglut\include;D:\master\vr\final2\PositionBasedDynamics\extern\glew\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\..\deps;D:\master\vr\final2\PositionBasedDynamics\extern\imgui;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Discregrid\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\master\vr\final2\PositionBasedDynamics;D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\include;D:\master\vr\final2\PositionBasedDynamics\extern\eigen;D:\master\vr\final2\PositionBasedDynamics\extern\freeglut\include;D:\master\vr\final2\PositionBasedDynamics\extern\glew\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\..\deps;D:\master\vr\final2\PositionBasedDynamics\extern\imgui;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Discregrid\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;..\..\lib\Debug\imgui_d.lib;..\..\lib\Debug\glfw3_d.lib;..\..\lib\Debug\PositionBasedDynamics_d.lib;..\..\lib\Debug\Simulation_d.lib;..\..\lib\Debug\Utils_d.lib;..\..\lib\Debug\PositionBasedDynamics_d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/master/vr/final2/PositionBasedDynamics/build-vs2/Demos/GenericConstraintsDemos/Debug/GenericParticleConstraintsDemo_d.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/master/vr/final2/PositionBasedDynamics/bin/GenericParticleConstraintsDemo_d.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\master\vr\final2\PositionBasedDynamics;D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\include;D:\master\vr\final2\PositionBasedDynamics\extern\eigen;D:\master\vr\final2\PositionBasedDynamics\extern\freeglut\include;D:\master\vr\final2\PositionBasedDynamics\extern\glew\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\..\deps;D:\master\vr\final2\PositionBasedDynamics\extern\imgui;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Discregrid\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OpenMPSupport>true</OpenMPSupport>
+      <Optimization>Full</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE;USE_DOUBLE;IMGUI_IMPL_OPENGL_LOADER_GLAD;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE;USE_DOUBLE;IMGUI_IMPL_OPENGL_LOADER_GLAD;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\master\vr\final2\PositionBasedDynamics;D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\include;D:\master\vr\final2\PositionBasedDynamics\extern\eigen;D:\master\vr\final2\PositionBasedDynamics\extern\freeglut\include;D:\master\vr\final2\PositionBasedDynamics\extern\glew\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\..\deps;D:\master\vr\final2\PositionBasedDynamics\extern\imgui;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Discregrid\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\master\vr\final2\PositionBasedDynamics;D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\include;D:\master\vr\final2\PositionBasedDynamics\extern\eigen;D:\master\vr\final2\PositionBasedDynamics\extern\freeglut\include;D:\master\vr\final2\PositionBasedDynamics\extern\glew\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\..\deps;D:\master\vr\final2\PositionBasedDynamics\extern\imgui;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Discregrid\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;..\..\lib\Release\imgui.lib;..\..\lib\Release\glfw3.lib;..\..\lib\Release\PositionBasedDynamics.lib;..\..\lib\Release\Simulation.lib;..\..\lib\Release\Utils.lib;..\..\lib\Release\PositionBasedDynamics.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/master/vr/final2/PositionBasedDynamics/build-vs2/Demos/GenericConstraintsDemos/Release/GenericParticleConstraintsDemo.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/master/vr/final2/PositionBasedDynamics/bin/GenericParticleConstraintsDemo.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\master\vr\final2\PositionBasedDynamics;D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\include;D:\master\vr\final2\PositionBasedDynamics\extern\eigen;D:\master\vr\final2\PositionBasedDynamics\extern\freeglut\include;D:\master\vr\final2\PositionBasedDynamics\extern\glew\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\..\deps;D:\master\vr\final2\PositionBasedDynamics\extern\imgui;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Discregrid\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <MinimalRebuild></MinimalRebuild>
+      <OpenMPSupport>true</OpenMPSupport>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE;USE_DOUBLE;IMGUI_IMPL_OPENGL_LOADER_GLAD;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE;USE_DOUBLE;IMGUI_IMPL_OPENGL_LOADER_GLAD;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\master\vr\final2\PositionBasedDynamics;D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\include;D:\master\vr\final2\PositionBasedDynamics\extern\eigen;D:\master\vr\final2\PositionBasedDynamics\extern\freeglut\include;D:\master\vr\final2\PositionBasedDynamics\extern\glew\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\..\deps;D:\master\vr\final2\PositionBasedDynamics\extern\imgui;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Discregrid\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\master\vr\final2\PositionBasedDynamics;D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\include;D:\master\vr\final2\PositionBasedDynamics\extern\eigen;D:\master\vr\final2\PositionBasedDynamics\extern\freeglut\include;D:\master\vr\final2\PositionBasedDynamics\extern\glew\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\..\deps;D:\master\vr\final2\PositionBasedDynamics\extern\imgui;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Discregrid\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;..\..\lib\MinSizeRel\imgui_ms.lib;..\..\lib\MinSizeRel\glfw3_ms.lib;..\..\lib\MinSizeRel\PositionBasedDynamics_ms.lib;..\..\lib\MinSizeRel\Simulation_ms.lib;..\..\lib\MinSizeRel\Utils_ms.lib;..\..\lib\MinSizeRel\PositionBasedDynamics_ms.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/master/vr/final2/PositionBasedDynamics/build-vs2/Demos/GenericConstraintsDemos/MinSizeRel/GenericParticleConstraintsDemo_ms.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/master/vr/final2/PositionBasedDynamics/bin/GenericParticleConstraintsDemo_ms.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\master\vr\final2\PositionBasedDynamics;D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\include;D:\master\vr\final2\PositionBasedDynamics\extern\eigen;D:\master\vr\final2\PositionBasedDynamics\extern\freeglut\include;D:\master\vr\final2\PositionBasedDynamics\extern\glew\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\..\deps;D:\master\vr\final2\PositionBasedDynamics\extern\imgui;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Discregrid\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OpenMPSupport>true</OpenMPSupport>
+      <Optimization>Full</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE;USE_DOUBLE;IMGUI_IMPL_OPENGL_LOADER_GLAD;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE;USE_DOUBLE;IMGUI_IMPL_OPENGL_LOADER_GLAD;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\master\vr\final2\PositionBasedDynamics;D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\include;D:\master\vr\final2\PositionBasedDynamics\extern\eigen;D:\master\vr\final2\PositionBasedDynamics\extern\freeglut\include;D:\master\vr\final2\PositionBasedDynamics\extern\glew\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\..\deps;D:\master\vr\final2\PositionBasedDynamics\extern\imgui;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Discregrid\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\master\vr\final2\PositionBasedDynamics;D:\master\vr\final2\PositionBasedDynamics\build-vs2\GenericParameters\include;D:\master\vr\final2\PositionBasedDynamics\extern\eigen;D:\master\vr\final2\PositionBasedDynamics\extern\freeglut\include;D:\master\vr\final2\PositionBasedDynamics\extern\glew\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\include;D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\..\deps;D:\master\vr\final2\PositionBasedDynamics\extern\imgui;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Discregrid\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;..\..\lib\RelWithDebInfo\imgui_rd.lib;..\..\lib\RelWithDebInfo\glfw3_rd.lib;..\..\lib\RelWithDebInfo\PositionBasedDynamics_rd.lib;..\..\lib\RelWithDebInfo\Simulation_rd.lib;..\..\lib\RelWithDebInfo\Utils_rd.lib;..\..\lib\RelWithDebInfo\PositionBasedDynamics_rd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/master/vr/final2/PositionBasedDynamics/build-vs2/Demos/GenericConstraintsDemos/RelWithDebInfo/GenericParticleConstraintsDemo_rd.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/master/vr/final2/PositionBasedDynamics/bin/GenericParticleConstraintsDemo_rd.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\master\vr\final2\PositionBasedDynamics\Demos\GenericConstraintsDemos\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/master/vr/final2/PositionBasedDynamics/Demos/GenericConstraintsDemos/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/master/vr/final2/PositionBasedDynamics -BD:/master/vr/final2/PositionBasedDynamics/build-vs2 --check-stamp-file D:/master/vr/final2/PositionBasedDynamics/build-vs2/Demos/GenericConstraintsDemos/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\master\vr\final2\PositionBasedDynamics\CMake\FindEigen3.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\GenericConstraintsDemos\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/master/vr/final2/PositionBasedDynamics/Demos/GenericConstraintsDemos/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/master/vr/final2/PositionBasedDynamics -BD:/master/vr/final2/PositionBasedDynamics/build-vs2 --check-stamp-file D:/master/vr/final2/PositionBasedDynamics/build-vs2/Demos/GenericConstraintsDemos/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\master\vr\final2\PositionBasedDynamics\CMake\FindEigen3.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\GenericConstraintsDemos\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/master/vr/final2/PositionBasedDynamics/Demos/GenericConstraintsDemos/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/master/vr/final2/PositionBasedDynamics -BD:/master/vr/final2/PositionBasedDynamics/build-vs2 --check-stamp-file D:/master/vr/final2/PositionBasedDynamics/build-vs2/Demos/GenericConstraintsDemos/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\master\vr\final2\PositionBasedDynamics\CMake\FindEigen3.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\GenericConstraintsDemos\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/master/vr/final2/PositionBasedDynamics/Demos/GenericConstraintsDemos/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/master/vr/final2/PositionBasedDynamics -BD:/master/vr/final2/PositionBasedDynamics/build-vs2 --check-stamp-file D:/master/vr/final2/PositionBasedDynamics/build-vs2/Demos/GenericConstraintsDemos/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\master\vr\final2\PositionBasedDynamics\CMake\FindEigen3.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\GenericConstraintsDemos\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\GenericConstraintsDemos\GenericParticleConstraintsDemo.cpp" />
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\GenericConstraintsDemos\GenericConstraintsModel.cpp" />
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\GenericConstraintsDemos\GenericConstraintsModel.h" />
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\GenericConstraintsDemos\GenericConstraints.cpp" />
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\GenericConstraintsDemos\GenericConstraints.h" />
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\LogWindow.cpp" />
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\LogWindow.h" />
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\Simulator_GUI_imgui.cpp" />
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\Simulator_GUI_imgui.h" />
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\imguiParameters.cpp" />
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\imguiParameters.h" />
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\DemoBase.cpp" />
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\DemoBase.h" />
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\MiniGL.h" />
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\Selection.h" />
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\Shader.h" />
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\Visualization.h" />
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\extern\glfw\deps\glad_gl.c" />
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\MiniGL.cpp" />
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\Shader.cpp" />
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Common\Common.h" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\ZERO_CHECK.vcxproj">
+      <Project>{29A6C9B8-7FE9-3B22-80DD-D26AFB847722}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\CopyImguiFonts.vcxproj">
+      <Project>{3F827C1B-9AD5-359E-B13E-B1CB2CB01D16}</Project>
+      <Name>CopyImguiFonts</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\CopyPBDModels.vcxproj">
+      <Project>{5D78291A-6DAA-313B-A7BE-5CDB2985DDF2}</Project>
+      <Name>CopyPBDModels</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\CopyPBDShaders.vcxproj">
+      <Project>{F1CDB396-6637-3F73-A881-B7D0F9215FD4}</Project>
+      <Name>CopyPBDShaders</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\Ext_GenericParameters.vcxproj">
+      <Project>{46AD492A-B939-3755-977C-F981DEC2EA1E}</Project>
+      <Name>Ext_GenericParameters</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\PositionBasedDynamics\PositionBasedDynamics.vcxproj">
+      <Project>{898AD603-9CA7-3327-BEF8-94A13B456249}</Project>
+      <Name>PositionBasedDynamics</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\Simulation\Simulation.vcxproj">
+      <Project>{680F0673-29A3-3578-B89B-53674965142F}</Project>
+      <Name>Simulation</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\Utils\Utils.vcxproj">
+      <Project>{52C93DE9-476F-35ED-82C1-744A7759315F}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\extern\glfw\src\glfw.vcxproj">
+      <Project>{D0603846-9F66-3E15-88F9-2E2B97015E68}</Project>
+      <Name>glfw</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\extern\imgui\imgui.vcxproj">
+      <Project>{A12B6F80-66A3-3234-B9D8-B8E896EEE56C}</Project>
+      <Name>imgui</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

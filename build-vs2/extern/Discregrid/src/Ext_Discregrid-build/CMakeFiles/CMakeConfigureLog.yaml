@@ -1,0 +1,498 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineSystem.cmake:205 (message)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      The system is: Windows - 10.0.26200 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.40+3e7442088
+      鐢熸垚鍚姩鏃堕棿涓?2026/6/24 10:10:06銆?
+      
+      鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\3.31.6-msvc6\\CompilerIdC\\CompilerIdC.vcxproj鈥?榛樿鐩爣)銆?
+      PrepareForBuild:
+        姝ｅ湪鍒涘缓鐩綍鈥淒ebug\\鈥濄€?
+        宸插惎鐢ㄧ粨鏋勫寲杈撳嚭銆傜紪璇戝櫒璇婃柇鐨勬牸寮忚缃皢鍙嶆槧閿欒灞傛缁撴瀯銆傛湁鍏宠缁嗕俊鎭紝璇峰弬闃?https://aka.ms/cpp/structured-output銆?
+        姝ｅ湪鍒涘缓鐩綍鈥淒ebug\\CompilerIdC.tlog\\鈥濄€?
+      InitializeBuildStatus:
+        姝ｅ湪鍒涘缓鈥淒ebug\\CompilerIdC.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+        姝ｅ湪瀵光€淒ebug\\CompilerIdC.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TC /FC /errorReport:queue CMakeCCompilerId.c
+        CMakeCCompilerId.c
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdC.lib" /MACHINE:X64 Debug\\CMakeCCompilerId.obj
+        CompilerIdC.vcxproj -> D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\3.31.6-msvc6\\CompilerIdC\\CompilerIdC.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        姝ｅ湪鍒犻櫎鏂囦欢鈥淒ebug\\CompilerIdC.tlog\\unsuccessfulbuild鈥濄€?
+        姝ｅ湪瀵光€淒ebug\\CompilerIdC.tlog\\CompilerIdC.lastbuildstate鈥濇墽琛?Touch 浠诲姟銆?
+      宸插畬鎴愮敓鎴愰」鐩€淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\3.31.6-msvc6\\CompilerIdC\\CompilerIdC.vcxproj鈥?榛樿鐩爣)鐨勬搷浣溿€?
+      
+      宸叉垚鍔熺敓鎴愩€?
+          0 涓鍛?
+          0 涓敊璇?
+      
+      宸茬敤鏃堕棿 00:00:00.98
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
+      
+      The C compiler identification is MSVC, found in:
+        D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/3.31.6-msvc6/CompilerIdC/CompilerIdC.exe
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler:  
+      Build flags: /DWIN32;/D_WINDOWS;/W3;/GR;/EHsc
+      Id flags:  
+      
+      The output was:
+      0
+      閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.40+3e7442088
+      鐢熸垚鍚姩鏃堕棿涓?2026/6/24 10:10:07銆?
+      
+      鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj鈥?榛樿鐩爣)銆?
+      PrepareForBuild:
+        姝ｅ湪鍒涘缓鐩綍鈥淒ebug\\鈥濄€?
+        宸插惎鐢ㄧ粨鏋勫寲杈撳嚭銆傜紪璇戝櫒璇婃柇鐨勬牸寮忚缃皢鍙嶆槧閿欒灞傛缁撴瀯銆傛湁鍏宠缁嗕俊鎭紝璇峰弬闃?https://aka.ms/cpp/structured-output銆?
+        姝ｅ湪鍒涘缓鐩綍鈥淒ebug\\CompilerIdCXX.tlog\\鈥濄€?
+      InitializeBuildStatus:
+        姝ｅ湪鍒涘缓鈥淒ebug\\CompilerIdCXX.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+        姝ｅ湪瀵光€淒ebug\\CompilerIdCXX.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        姝ｅ湪鍒犻櫎鏂囦欢鈥淒ebug\\CompilerIdCXX.tlog\\unsuccessfulbuild鈥濄€?
+        姝ｅ湪瀵光€淒ebug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate鈥濇墽琛?Touch 浠诲姟銆?
+      宸插畬鎴愮敓鎴愰」鐩€淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj鈥?榛樿鐩爣)鐨勬搷浣溿€?
+      
+      宸叉垚鍔熺敓鎴愩€?
+          0 涓鍛?
+          0 涓敊璇?
+      
+      宸茬敤鏃堕棿 00:00:00.99
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+      
+      The CXX compiler identification is MSVC, found in:
+        D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/3.31.6-msvc6/CompilerIdCXX/CompilerIdCXX.exe
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-n60utf"
+      binary: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-n60utf"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
+      CMAKE_MODULE_PATH: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid/cmake/Modules"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-n60utf'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Professional/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_0627d.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.40+3e7442088
+        鐢熸垚鍚姩鏃堕棿涓?2026/6/24 10:10:09銆?
+        
+        鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-n60utf\\cmTC_0627d.vcxproj鈥?榛樿鐩爣)銆?
+        PrepareForBuild:
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_0627d.dir\\Debug\\鈥濄€?
+          宸插惎鐢ㄧ粨鏋勫寲杈撳嚭銆傜紪璇戝櫒璇婃柇鐨勬牸寮忚缃皢鍙嶆槧閿欒灞傛缁撴瀯銆傛湁鍏宠缁嗕俊鎭紝璇峰弬闃?https://aka.ms/cpp/structured-output銆?
+          姝ｅ湪鍒涘缓鐩綍鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-n60utf\\Debug\\鈥濄€?
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_0627d.dir\\Debug\\cmTC_0627d.tlog\\鈥濄€?
+        InitializeBuildStatus:
+          姝ｅ湪鍒涘缓鈥渃mTC_0627d.dir\\Debug\\cmTC_0627d.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+          姝ｅ湪瀵光€渃mTC_0627d.dir\\Debug\\cmTC_0627d.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_0627d.dir\\Debug\\\\" /Fd"cmTC_0627d.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.31\\Modules\\CMakeCCompilerABI.c"
+          鐢ㄤ簬 x64 鐨?Microsoft (R) C/C++ 浼樺寲缂栬瘧鍣?19.44.35225 鐗?
+          鐗堟潈鎵€鏈?C) Microsoft Corporation銆備繚鐣欐墍鏈夋潈鍒┿€?
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_0627d.dir\\Debug\\\\" /Fd"cmTC_0627d.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.31\\Modules\\CMakeCCompilerABI.c"
+          CMakeCCompilerABI.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-n60utf\\Debug\\cmTC_0627d.exe" /INCREMENTAL /ILK:"cmTC_0627d.dir\\Debug\\cmTC_0627d.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-n60utf/Debug/cmTC_0627d.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-n60utf/Debug/cmTC_0627d.lib" /MACHINE:X64  /machine:x64 cmTC_0627d.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_0627d.vcxproj -> D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-n60utf\\Debug\\cmTC_0627d.exe
+        FinalizeBuildStatus:
+          姝ｅ湪鍒犻櫎鏂囦欢鈥渃mTC_0627d.dir\\Debug\\cmTC_0627d.tlog\\unsuccessfulbuild鈥濄€?
+          姝ｅ湪瀵光€渃mTC_0627d.dir\\Debug\\cmTC_0627d.tlog\\cmTC_0627d.lastbuildstate鈥濇墽琛?Touch 浠诲姟銆?
+        宸插畬鎴愮敓鎴愰」鐩€淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-n60utf\\cmTC_0627d.vcxproj鈥?榛樿鐩爣)鐨勬搷浣溿€?
+        
+        宸叉垚鍔熺敓鎴愩€?
+            0 涓鍛?
+            0 涓敊璇?
+        
+        宸茬敤鏃堕棿 00:00:00.95
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
+        linker tool for 'C': C:/Program Files/Microsoft Visual Studio/2022/Professional/VC/Tools/MSVC/14.44.35207/bin/HostX64/x64/link.exe
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:255 (cmake_determine_linker_id)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Running the C compiler's linker: "C:/Program Files/Microsoft Visual Studio/2022/Professional/VC/Tools/MSVC/14.44.35207/bin/HostX64/x64/link.exe" "-v"
+      Microsoft (R) Incremental Linker Version 14.44.35225.0
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-x16llf"
+      binary: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-x16llf"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_MODULE_PATH: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid/cmake/Modules"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-x16llf'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Professional/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_ce70e.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.40+3e7442088
+        鐢熸垚鍚姩鏃堕棿涓?2026/6/24 10:10:10銆?
+        
+        鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-x16llf\\cmTC_ce70e.vcxproj鈥?榛樿鐩爣)銆?
+        PrepareForBuild:
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_ce70e.dir\\Debug\\鈥濄€?
+          宸插惎鐢ㄧ粨鏋勫寲杈撳嚭銆傜紪璇戝櫒璇婃柇鐨勬牸寮忚缃皢鍙嶆槧閿欒灞傛缁撴瀯銆傛湁鍏宠缁嗕俊鎭紝璇峰弬闃?https://aka.ms/cpp/structured-output銆?
+          姝ｅ湪鍒涘缓鐩綍鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-x16llf\\Debug\\鈥濄€?
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_ce70e.dir\\Debug\\cmTC_ce70e.tlog\\鈥濄€?
+        InitializeBuildStatus:
+          姝ｅ湪鍒涘缓鈥渃mTC_ce70e.dir\\Debug\\cmTC_ce70e.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+          姝ｅ湪瀵光€渃mTC_ce70e.dir\\Debug\\cmTC_ce70e.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_ce70e.dir\\Debug\\\\" /Fd"cmTC_ce70e.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.31\\Modules\\CMakeCXXCompilerABI.cpp"
+          鐢ㄤ簬 x64 鐨?Microsoft (R) C/C++ 浼樺寲缂栬瘧鍣?19.44.35225 鐗?
+          鐗堟潈鎵€鏈?C) Microsoft Corporation銆備繚鐣欐墍鏈夋潈鍒┿€?
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_ce70e.dir\\Debug\\\\" /Fd"cmTC_ce70e.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.31\\Modules\\CMakeCXXCompilerABI.cpp"
+          CMakeCXXCompilerABI.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-x16llf\\Debug\\cmTC_ce70e.exe" /INCREMENTAL /ILK:"cmTC_ce70e.dir\\Debug\\cmTC_ce70e.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-x16llf/Debug/cmTC_ce70e.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-x16llf/Debug/cmTC_ce70e.lib" /MACHINE:X64  /machine:x64 cmTC_ce70e.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_ce70e.vcxproj -> D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-x16llf\\Debug\\cmTC_ce70e.exe
+        FinalizeBuildStatus:
+          姝ｅ湪鍒犻櫎鏂囦欢鈥渃mTC_ce70e.dir\\Debug\\cmTC_ce70e.tlog\\unsuccessfulbuild鈥濄€?
+          姝ｅ湪瀵光€渃mTC_ce70e.dir\\Debug\\cmTC_ce70e.tlog\\cmTC_ce70e.lastbuildstate鈥濇墽琛?Touch 浠诲姟銆?
+        宸插畬鎴愮敓鎴愰」鐩€淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-x16llf\\cmTC_ce70e.vcxproj鈥?榛樿鐩爣)鐨勬搷浣溿€?
+        
+        宸叉垚鍔熺敓鎴愩€?
+            0 涓鍛?
+            0 涓敊璇?
+        
+        宸茬敤鏃堕棿 00:00:00.97
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
+        linker tool for 'CXX': C:/Program Files/Microsoft Visual Studio/2022/Professional/VC/Tools/MSVC/14.44.35207/bin/HostX64/x64/link.exe
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:255 (cmake_determine_linker_id)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      Running the CXX compiler's linker: "C:/Program Files/Microsoft Visual Studio/2022/Professional/VC/Tools/MSVC/14.44.35207/bin/HostX64/x64/link.exe" "-v"
+      Microsoft (R) Incremental Linker Version 14.44.35225.0
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:252 (try_compile)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:522 (_OPENMP_GET_FLAGS)"
+      - "discregrid/CMakeLists.txt:55 (find_package)"
+    description: "Detecting C OpenMP compiler info"
+    directories:
+      source: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-qmaf4u"
+      binary: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-qmaf4u"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
+      CMAKE_MODULE_PATH: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid/cmake/Modules"
+    buildResult:
+      variable: "OpenMP_COMPILE_RESULT_C_openmp"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-qmaf4u'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Professional/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_ae696.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.40+3e7442088
+        鐢熸垚鍚姩鏃堕棿涓?2026/6/24 10:10:12銆?
+        
+        鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-qmaf4u\\cmTC_ae696.vcxproj鈥?榛樿鐩爣)銆?
+        PrepareForBuild:
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_ae696.dir\\Debug\\鈥濄€?
+          宸插惎鐢ㄧ粨鏋勫寲杈撳嚭銆傜紪璇戝櫒璇婃柇鐨勬牸寮忚缃皢鍙嶆槧閿欒灞傛缁撴瀯銆傛湁鍏宠缁嗕俊鎭紝璇峰弬闃?https://aka.ms/cpp/structured-output銆?
+          姝ｅ湪鍒涘缓鐩綍鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-qmaf4u\\Debug\\鈥濄€?
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_ae696.dir\\Debug\\cmTC_ae696.tlog\\鈥濄€?
+        InitializeBuildStatus:
+          姝ｅ湪鍒涘缓鈥渃mTC_ae696.dir\\Debug\\cmTC_ae696.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+          姝ｅ湪瀵光€渃mTC_ae696.dir\\Debug\\cmTC_ae696.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /Fo"cmTC_ae696.dir\\Debug\\\\" /Fd"cmTC_ae696.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-qmaf4u\\OpenMPTryFlag.c"
+          鐢ㄤ簬 x64 鐨?Microsoft (R) C/C++ 浼樺寲缂栬瘧鍣?19.44.35225 鐗?
+          鐗堟潈鎵€鏈?C) Microsoft Corporation銆備繚鐣欐墍鏈夋潈鍒┿€?
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /Fo"cmTC_ae696.dir\\Debug\\\\" /Fd"cmTC_ae696.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-qmaf4u\\OpenMPTryFlag.c"
+          OpenMPTryFlag.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-qmaf4u\\Debug\\cmTC_ae696.exe" /INCREMENTAL /ILK:"cmTC_ae696.dir\\Debug\\cmTC_ae696.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-qmaf4u/Debug/cmTC_ae696.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-qmaf4u/Debug/cmTC_ae696.lib" /MACHINE:X64  /machine:x64 cmTC_ae696.dir\\Debug\\OpenMPTryFlag.obj
+          cmTC_ae696.vcxproj -> D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-qmaf4u\\Debug\\cmTC_ae696.exe
+        FinalizeBuildStatus:
+          姝ｅ湪鍒犻櫎鏂囦欢鈥渃mTC_ae696.dir\\Debug\\cmTC_ae696.tlog\\unsuccessfulbuild鈥濄€?
+          姝ｅ湪瀵光€渃mTC_ae696.dir\\Debug\\cmTC_ae696.tlog\\cmTC_ae696.lastbuildstate鈥濇墽琛?Touch 浠诲姟銆?
+        宸插畬鎴愮敓鎴愰」鐩€淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-qmaf4u\\cmTC_ae696.vcxproj鈥?榛樿鐩爣)鐨勬搷浣溿€?
+        
+        宸叉垚鍔熺敓鎴愩€?
+            0 涓鍛?
+            0 涓敊璇?
+        
+        宸茬敤鏃堕棿 00:00:00.96
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:252 (try_compile)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:522 (_OPENMP_GET_FLAGS)"
+      - "discregrid/CMakeLists.txt:55 (find_package)"
+    description: "Detecting CXX OpenMP compiler info"
+    directories:
+      source: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-xfldub"
+      binary: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-xfldub"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MP /openmp /wd4250"
+      CMAKE_MODULE_PATH: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid/cmake/Modules"
+    buildResult:
+      variable: "OpenMP_COMPILE_RESULT_CXX_openmp"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-xfldub'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Professional/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_eef5d.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.40+3e7442088
+        鐢熸垚鍚姩鏃堕棿涓?2026/6/24 10:10:13銆?
+        
+        鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-xfldub\\cmTC_eef5d.vcxproj鈥?榛樿鐩爣)銆?
+        PrepareForBuild:
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_eef5d.dir\\Debug\\鈥濄€?
+          宸插惎鐢ㄧ粨鏋勫寲杈撳嚭銆傜紪璇戝櫒璇婃柇鐨勬牸寮忚缃皢鍙嶆槧閿欒灞傛缁撴瀯銆傛湁鍏宠缁嗕俊鎭紝璇峰弬闃?https://aka.ms/cpp/structured-output銆?
+          姝ｅ湪鍒涘缓鐩綍鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-xfldub\\Debug\\鈥濄€?
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_eef5d.dir\\Debug\\cmTC_eef5d.tlog\\鈥濄€?
+        InitializeBuildStatus:
+          姝ｅ湪鍒涘缓鈥渃mTC_eef5d.dir\\Debug\\cmTC_eef5d.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+          姝ｅ湪瀵光€渃mTC_eef5d.dir\\Debug\\cmTC_eef5d.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /MP /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /openmp /Fo"cmTC_eef5d.dir\\Debug\\\\" /Fd"cmTC_eef5d.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /wd4250 /errorReport:queue "D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-xfldub\\OpenMPTryFlag.cpp"
+          鐢ㄤ簬 x64 鐨?Microsoft (R) C/C++ 浼樺寲缂栬瘧鍣?19.44.35225 鐗?
+          鐗堟潈鎵€鏈?C) Microsoft Corporation銆備繚鐣欐墍鏈夋潈鍒┿€?
+          cl /c /Zi /W3 /WX- /diagnostics:column /MP /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /openmp /Fo"cmTC_eef5d.dir\\Debug\\\\" /Fd"cmTC_eef5d.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /wd4250 /errorReport:queue "D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-xfldub\\OpenMPTryFlag.cpp"
+          OpenMPTryFlag.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-xfldub\\Debug\\cmTC_eef5d.exe" /INCREMENTAL /ILK:"cmTC_eef5d.dir\\Debug\\cmTC_eef5d.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-xfldub/Debug/cmTC_eef5d.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-xfldub/Debug/cmTC_eef5d.lib" /MACHINE:X64  /machine:x64 cmTC_eef5d.dir\\Debug\\OpenMPTryFlag.obj
+          cmTC_eef5d.vcxproj -> D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-xfldub\\Debug\\cmTC_eef5d.exe
+        FinalizeBuildStatus:
+          姝ｅ湪鍒犻櫎鏂囦欢鈥渃mTC_eef5d.dir\\Debug\\cmTC_eef5d.tlog\\unsuccessfulbuild鈥濄€?
+          姝ｅ湪瀵光€渃mTC_eef5d.dir\\Debug\\cmTC_eef5d.tlog\\cmTC_eef5d.lastbuildstate鈥濇墽琛?Touch 浠诲姟銆?
+        宸插畬鎴愮敓鎴愰」鐩€淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-xfldub\\cmTC_eef5d.vcxproj鈥?榛樿鐩爣)鐨勬搷浣溿€?
+        
+        宸叉垚鍔熺敓鎴愩€?
+            0 涓鍛?
+            0 涓敊璇?
+        
+        宸茬敤鏃堕棿 00:00:00.99
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:456 (try_compile)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:596 (_OPENMP_GET_SPEC_DATE)"
+      - "discregrid/CMakeLists.txt:55 (find_package)"
+    description: "Detecting C OpenMP version"
+    directories:
+      source: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-09g2ga"
+      binary: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-09g2ga"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
+      CMAKE_MODULE_PATH: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid/cmake/Modules"
+    buildResult:
+      variable: "OpenMP_SPECTEST_C_"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-09g2ga'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Professional/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_fee20.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.40+3e7442088
+        鐢熸垚鍚姩鏃堕棿涓?2026/6/24 10:10:14銆?
+        
+        鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-09g2ga\\cmTC_fee20.vcxproj鈥?榛樿鐩爣)銆?
+        PrepareForBuild:
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_fee20.dir\\Debug\\鈥濄€?
+          宸插惎鐢ㄧ粨鏋勫寲杈撳嚭銆傜紪璇戝櫒璇婃柇鐨勬牸寮忚缃皢鍙嶆槧閿欒灞傛缁撴瀯銆傛湁鍏宠缁嗕俊鎭紝璇峰弬闃?https://aka.ms/cpp/structured-output銆?
+          姝ｅ湪鍒涘缓鐩綍鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-09g2ga\\Debug\\鈥濄€?
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_fee20.dir\\Debug\\cmTC_fee20.tlog\\鈥濄€?
+        InitializeBuildStatus:
+          姝ｅ湪鍒涘缓鈥渃mTC_fee20.dir\\Debug\\cmTC_fee20.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+          姝ｅ湪瀵光€渃mTC_fee20.dir\\Debug\\cmTC_fee20.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /Fo"cmTC_fee20.dir\\Debug\\\\" /Fd"cmTC_fee20.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-09g2ga\\OpenMPCheckVersion.c"
+          鐢ㄤ簬 x64 鐨?Microsoft (R) C/C++ 浼樺寲缂栬瘧鍣?19.44.35225 鐗?
+          鐗堟潈鎵€鏈?C) Microsoft Corporation銆備繚鐣欐墍鏈夋潈鍒┿€?
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /Fo"cmTC_fee20.dir\\Debug\\\\" /Fd"cmTC_fee20.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-09g2ga\\OpenMPCheckVersion.c"
+          OpenMPCheckVersion.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-09g2ga\\Debug\\cmTC_fee20.exe" /INCREMENTAL /ILK:"cmTC_fee20.dir\\Debug\\cmTC_fee20.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-09g2ga/Debug/cmTC_fee20.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-09g2ga/Debug/cmTC_fee20.lib" /MACHINE:X64  /machine:x64 cmTC_fee20.dir\\Debug\\OpenMPCheckVersion.obj
+          cmTC_fee20.vcxproj -> D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-09g2ga\\Debug\\cmTC_fee20.exe
+        FinalizeBuildStatus:
+          姝ｅ湪鍒犻櫎鏂囦欢鈥渃mTC_fee20.dir\\Debug\\cmTC_fee20.tlog\\unsuccessfulbuild鈥濄€?
+          姝ｅ湪瀵光€渃mTC_fee20.dir\\Debug\\cmTC_fee20.tlog\\cmTC_fee20.lastbuildstate鈥濇墽琛?Touch 浠诲姟銆?
+        宸插畬鎴愮敓鎴愰」鐩€淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-09g2ga\\cmTC_fee20.vcxproj鈥?榛樿鐩爣)鐨勬搷浣溿€?
+        
+        宸叉垚鍔熺敓鎴愩€?
+            0 涓鍛?
+            0 涓敊璇?
+        
+        宸茬敤鏃堕棿 00:00:00.97
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:456 (try_compile)"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:596 (_OPENMP_GET_SPEC_DATE)"
+      - "discregrid/CMakeLists.txt:55 (find_package)"
+    description: "Detecting CXX OpenMP version"
+    directories:
+      source: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-wa748v"
+      binary: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-wa748v"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MP /openmp /wd4250"
+      CMAKE_MODULE_PATH: "D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid/cmake/Modules"
+    buildResult:
+      variable: "OpenMP_SPECTEST_CXX_"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-wa748v'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Professional/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_982e4.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        閫傜敤浜?.NET Framework MSBuild 鐗堟湰 17.14.40+3e7442088
+        鐢熸垚鍚姩鏃堕棿涓?2026/6/24 10:10:16銆?
+        
+        鑺傜偣 1 涓婄殑椤圭洰鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-wa748v\\cmTC_982e4.vcxproj鈥?榛樿鐩爣)銆?
+        PrepareForBuild:
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_982e4.dir\\Debug\\鈥濄€?
+          宸插惎鐢ㄧ粨鏋勫寲杈撳嚭銆傜紪璇戝櫒璇婃柇鐨勬牸寮忚缃皢鍙嶆槧閿欒灞傛缁撴瀯銆傛湁鍏宠缁嗕俊鎭紝璇峰弬闃?https://aka.ms/cpp/structured-output銆?
+          姝ｅ湪鍒涘缓鐩綍鈥淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-wa748v\\Debug\\鈥濄€?
+          姝ｅ湪鍒涘缓鐩綍鈥渃mTC_982e4.dir\\Debug\\cmTC_982e4.tlog\\鈥濄€?
+        InitializeBuildStatus:
+          姝ｅ湪鍒涘缓鈥渃mTC_982e4.dir\\Debug\\cmTC_982e4.tlog\\unsuccessfulbuild鈥濓紝鍥犱负宸叉寚瀹氣€淎lwaysCreate鈥濄€?
+          姝ｅ湪瀵光€渃mTC_982e4.dir\\Debug\\cmTC_982e4.tlog\\unsuccessfulbuild鈥濇墽琛?Touch 浠诲姟銆?
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /MP /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /openmp /Fo"cmTC_982e4.dir\\Debug\\\\" /Fd"cmTC_982e4.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /wd4250 /errorReport:queue "D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-wa748v\\OpenMPCheckVersion.cpp"
+          鐢ㄤ簬 x64 鐨?Microsoft (R) C/C++ 浼樺寲缂栬瘧鍣?19.44.35225 鐗?
+          鐗堟潈鎵€鏈?C) Microsoft Corporation銆備繚鐣欐墍鏈夋潈鍒┿€?
+          cl /c /Zi /W3 /WX- /diagnostics:column /MP /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /openmp /Fo"cmTC_982e4.dir\\Debug\\\\" /Fd"cmTC_982e4.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /wd4250 /errorReport:queue "D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-wa748v\\OpenMPCheckVersion.cpp"
+          OpenMPCheckVersion.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-wa748v\\Debug\\cmTC_982e4.exe" /INCREMENTAL /ILK:"cmTC_982e4.dir\\Debug\\cmTC_982e4.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-wa748v/Debug/cmTC_982e4.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/master/vr/final2/PositionBasedDynamics/build-vs2/extern/Discregrid/src/Ext_Discregrid-build/CMakeFiles/CMakeScratch/TryCompile-wa748v/Debug/cmTC_982e4.lib" /MACHINE:X64  /machine:x64 cmTC_982e4.dir\\Debug\\OpenMPCheckVersion.obj
+          cmTC_982e4.vcxproj -> D:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-wa748v\\Debug\\cmTC_982e4.exe
+        FinalizeBuildStatus:
+          姝ｅ湪鍒犻櫎鏂囦欢鈥渃mTC_982e4.dir\\Debug\\cmTC_982e4.tlog\\unsuccessfulbuild鈥濄€?
+          姝ｅ湪瀵光€渃mTC_982e4.dir\\Debug\\cmTC_982e4.tlog\\cmTC_982e4.lastbuildstate鈥濇墽琛?Touch 浠诲姟銆?
+        宸插畬鎴愮敓鎴愰」鐩€淒:\\master\\vr\\final2\\PositionBasedDynamics\\build-vs2\\extern\\Discregrid\\src\\Ext_Discregrid-build\\CMakeFiles\\CMakeScratch\\TryCompile-wa748v\\cmTC_982e4.vcxproj鈥?榛樿鐩爣)鐨勬搷浣溿€?
+        
+        宸叉垚鍔熺敓鎴愩€?
+            0 涓鍛?
+            0 涓敊璇?
+        
+        宸茬敤鏃堕棿 00:00:00.99
+        
+      exitCode: 0
+...

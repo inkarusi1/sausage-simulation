@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\DistanceFieldDemos\RigidBodyCollisionDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\LogWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\Simulator_GUI_imgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\imguiParameters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\DemoBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\extern\glfw\deps\glad_gl.c">
+      <Filter>Source Files\Visualization</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\MiniGL.cpp">
+      <Filter>Source Files\Visualization</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\Shader.cpp">
+      <Filter>Source Files\Visualization</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\LogWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\Simulator_GUI_imgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\imguiParameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Common\DemoBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\MiniGL.h">
+      <Filter>Header Files\Visualization</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\Selection.h">
+      <Filter>Header Files\Visualization</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\Shader.h">
+      <Filter>Header Files\Visualization</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\Visualization.h">
+      <Filter>Header Files\Visualization</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\master\vr\final2\PositionBasedDynamics\Common\Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\master\vr\final2\PositionBasedDynamics\Demos\DistanceFieldDemos\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{9EB59DE8-1D39-33C1-896B-5D70EC3E216C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Visualization">
+      <UniqueIdentifier>{86FFA6C3-A73B-3F1F-9475-A262067C684C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{EC0B62F7-962A-3165-983F-6EDC03AFFA29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Visualization">
+      <UniqueIdentifier>{71D87A9A-5325-3AD0-92E4-F50E2265D361}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

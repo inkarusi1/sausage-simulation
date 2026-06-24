@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\CMakeFiles\2e8529d94502b2c7d9d719491fb6459a\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{327A0820-5206-33C8-8613-267B869373CE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

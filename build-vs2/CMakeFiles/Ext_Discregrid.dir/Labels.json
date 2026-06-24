@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/Ext_Discregrid"
+		},
+		{
+			"file" : "D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/0c06a94d533509c22dcefa9f57d37633/Ext_Discregrid.rule"
+		},
+		{
+			"file" : "D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/45578202ea999575d9acbaf7e234129f/Ext_Discregrid-complete.rule"
+		},
+		{
+			"file" : "D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/47a3c65373be6b262451bc3909dc0f61/Ext_Discregrid-build.rule"
+		},
+		{
+			"file" : "D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/47a3c65373be6b262451bc3909dc0f61/Ext_Discregrid-configure.rule"
+		},
+		{
+			"file" : "D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/47a3c65373be6b262451bc3909dc0f61/Ext_Discregrid-download.rule"
+		},
+		{
+			"file" : "D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/47a3c65373be6b262451bc3909dc0f61/Ext_Discregrid-install.rule"
+		},
+		{
+			"file" : "D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/47a3c65373be6b262451bc3909dc0f61/Ext_Discregrid-mkdir.rule"
+		},
+		{
+			"file" : "D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/47a3c65373be6b262451bc3909dc0f61/Ext_Discregrid-patch.rule"
+		},
+		{
+			"file" : "D:/master/vr/final2/PositionBasedDynamics/build-vs2/CMakeFiles/47a3c65373be6b262451bc3909dc0f61/Ext_Discregrid-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"Ext_Discregrid"
+		],
+		"name" : "Ext_Discregrid"
+	}
+}

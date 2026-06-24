@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\CMakeFiles\a9615f2607c7f81993e7ab9aa8f59a22\update_mappings.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\master\vr\final2\PositionBasedDynamics\extern\glfw\src\mappings.h.in">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="D:\master\vr\final2\PositionBasedDynamics\extern\glfw\CMake\GenerateMappings.cmake" />
+    <None Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\extern\glfw\src\CMakeFiles\update_mappings" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{327A0820-5206-33C8-8613-267B869373CE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{9EB59DE8-1D39-33C1-896B-5D70EC3E216C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

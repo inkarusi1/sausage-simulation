@@ -1,0 +1,12 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindGit.cmake
+C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindPackageMessage.cmake
+D:/master/vr/final2/PositionBasedDynamics/.git/HEAD
+D:/master/vr/final2/PositionBasedDynamics/.git/refs/heads/master
+D:/master/vr/final2/PositionBasedDynamics/CMake/FindEigen3.cmake
+D:/master/vr/final2/PositionBasedDynamics/CMake/GetGitRevisionDescription.cmake
+D:/master/vr/final2/PositionBasedDynamics/CMake/GetGitRevisionDescription.cmake.in
+D:/master/vr/final2/PositionBasedDynamics/Utils/CMakeLists.txt
+D:/master/vr/final2/PositionBasedDynamics/Utils/Version.h.in
+D:/master/vr/final2/PositionBasedDynamics/build-vs2/Utils/CMakeFiles/git-data/grabRef.cmake
