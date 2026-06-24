@@ -262,6 +262,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{D825FD5F-294E-3B8B-A7C5-6D0EB01ED7D7}</Project>
       <Name>SausageRodCourseDemo</Name>
     </ProjectReference>
+    <ProjectReference Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\SausageRodEditorDemo\SausageRodEditorDemo.vcxproj">
+      <Project>{215CD6B7-D859-3B79-B65B-8F1D015BEE1C}</Project>
+      <Name>SausageRodEditorDemo</Name>
+    </ProjectReference>
     <ProjectReference Include="D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\SceneLoaderDemo\SceneLoaderDemo.vcxproj">
       <Project>{478CEAAF-7358-3B7B-9892-9852563114AC}</Project>
       <Name>SceneLoaderDemo</Name>

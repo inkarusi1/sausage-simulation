@@ -669,6 +669,151 @@ SDF 碰撞由 `Simulation/CubicSDFCollisionDetection.cpp` 和 `Simulation/Distan
 - `Simulation/CollisionDetection.*` 和 `DistanceFieldCollisionDetection.cpp`：新增碰撞检测或接触生成。
 - `PositionBasedDynamics/*`：新增约束求解、冲量或积分逻辑。
 
+## 新增课程 demo 的可复用设计
+
+本节记录课程作业新增 demo 中已经实现的可复用设计。它们不同于原仓库 `SceneLoaderDemo` 的 JSON 通用加载体系：这些设计主要在 `Demos/SausageRodCourseDemo` 和 `Demos/SausageRodEditorDemo` 中手写 C++ 场景与交互逻辑，用于在香肠课程场景里取得更低开销、更少穿模和暂停编辑能力。
+
+### 中心线杆香肠与胶囊半径碰撞壳
+
+文件：`Demos/SausageRodCourseDemo/main.cpp`、`Demos/SausageRodEditorDemo/main.cpp`
+
+设计：
+
+- 香肠不再用高分辨率四面体软体，也不是一串动态刚体球。
+- 香肠主体用少量中心线点 `RodPoint` 表示。
+- 相邻点和跨段点使用距离约束保持长度和弯曲刚度。
+- 低柔软度时使用 shape matching 保持整体接近刚体。
+- 碰撞时把静态障碍物 SDF 用 `sausageRadius + collisionSkin` 外扩，把中心线点和线段采样点投影到障碍物外侧。
+- 渲染时根据中心线生成连续管状表面，避免早期粒子链/球链出现明显分段。
+
+适合复用：
+
+- 细长柔体、绳状物、管状软体、低开销演示级软体。
+- 需要比 TetModel 更快、比刚体链更连续的课程 demo。
+
+限制：
+
+- 它不是原仓库完整的四面体软体求解器。
+- 体积形变是杆约束近似，不适合展示真实三维实体应力分布。
+- 接触响应是自定义 PBD 风格，不直接进入原仓库 `TimeStepController` 的刚体接触冲量管线。
+
+### 静态复杂障碍物的程序网格 + SDF
+
+文件：`Demos/SausageRodCourseDemo/main.cpp`、`Demos/SausageRodEditorDemo/main.cpp`
+
+设计：
+
+- 圆环和半管滑轨由 C++ 程序生成三角网格。
+- 使用 `Discregrid::TriangleMeshDistance` 生成 `CubicSDFCollisionDetection::Grid`。
+- 渲染网格和碰撞 SDF 来自同一套程序网格，减少视觉层与碰撞层不一致。
+- 圆环、滑轨等障碍物作为静态 `RigidBody`，碰撞查询时使用其刚体 transform 做 world/local 坐标转换。
+
+适合复用：
+
+- 不想维护外部 `.obj` 文件、但需要自定义形状并支持碰撞的 demo。
+- 视觉网格和碰撞形状必须一致的课程场景。
+
+限制：
+
+- SDF 网格首次生成有成本。
+- 运行时直接缩放复杂 SDF 网格容易造成视觉与碰撞场不一致；建议重建网格/SDF，而不是只改可视 transform。
+
+### 自定义接触响应中的摩擦和回弹
+
+文件：`Demos/SausageRodCourseDemo/main.cpp`、`Demos/SausageRodEditorDemo/main.cpp`
+
+设计：
+
+- 碰撞投影阶段记录接触法线、摩擦系数和恢复系数。
+- 摩擦/回弹仍从障碍物 `RigidBody::getFrictionCoeff()` 和 `getRestitutionCoeff()` 读取。
+- 法线回弹使用碰撞前预测速度 `predictedV` 计算，避免只做“推出物体”导致完全没有反弹。
+- 切向速度按摩擦系数阻尼，滑轨设置低摩擦，平台设置高摩擦。
+
+适合复用：
+
+- 自定义粒子/杆求解器没有直接接入原仓库接触冲量，但仍想复用刚体材质参数时。
+
+限制：
+
+- 这是自定义近似响应，不等价于原仓库速度约束阶段的完整接触冲量求解。
+- 如果需要多刚体堆叠、角速度和力矩的严格效果，仍应优先使用原生刚体模型和 `TimeStepController`。
+
+### 墙钟时间节流
+
+文件：`Demos/SausageRodCourseDemo/main.cpp`、`Demos/SausageRodEditorDemo/main.cpp`
+
+设计：
+
+- `MiniGL` 的 idle 回调可能按机器性能高频执行。
+- 新 demo 使用 `std::chrono::steady_clock` 统计真实时间，把仿真小步放进 accumulator。
+- `playbackSpeed` 控制展示播放倍率，避免程序在高性能机器上“快得离谱”。
+
+适合复用：
+
+- 不走原仓库 `TimeStepController::step()`、而是在 demo 内部手写步进循环的场景。
+
+限制：
+
+- 这控制的是展示速度，不改变物理世界中的重力常量。
+
+### 暂停编辑对象表
+
+文件：`Demos/SausageRodEditorDemo/main.cpp`
+
+设计：
+
+- 新增 `EditableRigidBody` 表，记录可编辑刚体的 `bodyIndex`、名称、box scale、是否可缩放、是否可删除、摩擦和回弹。
+- 初始场景中的平台、两个圆环和半管滑轨会登记到编辑器表。
+- 香肠作为特殊对象单独编辑，不走 `RigidBody` 表。
+- 暂停时，左键和编辑快捷键才会处理；未暂停时尽量交回原 viewer/仿真逻辑。
+
+适合复用：
+
+- 只想给某个 demo 加局部编辑能力，而不是把编辑器做进整个 `DemoBase`。
+- 需要明确区分“原始仿真模式”和“暂停编辑模式”的课程项目。
+
+限制：
+
+- 当前不是持久化场景编辑器，修改不会自动写回 JSON。
+- 选择依据是近似的屏幕反投影最近对象，不是完整网格拾取。
+
+### 暂停平移/旋转刚体的同步步骤
+
+文件：`Demos/SausageRodEditorDemo/main.cpp` 中 `syncRigidBodyTransform()`
+
+编辑静态刚体时不能只调用 `setPosition()` 或 `setRotation()`。新增 demo 中统一同步：
+
+1. 当前、上一帧、旧位置。
+2. 当前、上一帧、旧旋转。
+3. 线速度和角速度清零。
+4. rotation matrix。
+5. `updateInverseTransformation()`，保证 SDF world/local 查询跟随刚体 transform。
+6. `getGeometry().updateMeshTransformation(...)`，保证可视网格跟随 transform。
+
+这个步骤尤其重要：原仓库 `RigidBody::rotationUpdated()` 对质量为 0 的静态刚体不会自动更新全部状态，因此暂停编辑静态 SDF 障碍物时需要显式同步。
+
+### 运行时新增/删除盒体
+
+文件：`Demos/SausageRodEditorDemo/main.cpp`
+
+设计：
+
+- `n` 新增一个静态 box 刚体。
+- 新增时同时调用 `addBody(...)` 和 `addCollisionBox(...)`，保证可见且可碰撞。
+- 新增盒体登记到 `EditableRigidBody` 表，支持移动、旋转、缩放和删除。
+- `d` 删除只作用于编辑器新增盒体。
+
+删除策略：
+
+- 原仓库没有安全删除单个刚体并重映射所有碰撞对象/约束的通用 API。
+- 当前 demo 的“删除”采用停用并移动到远处的方式，避免破坏原始刚体 vector 下标和碰撞对象引用。
+
+缩放策略：
+
+- 只对 box 类对象开放运行时缩放。
+- 缩放时重新初始化该刚体的 cube 网格，并同步 `DistanceFieldCollisionBox::m_box`。
+- 对圆环/滑轨这类复杂 SDF 网格不开放运行时缩放，应重建网格和 SDF。
+
 ## 源码参考地图
 
 | 功能 | 主要文件 |
