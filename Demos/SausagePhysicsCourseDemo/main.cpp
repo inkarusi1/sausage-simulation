@@ -1,6 +1,7 @@
 #include "Common/Common.h"
 #include "Demos/Common/DemoBase.h"
 #include "Demos/Visualization/MiniGL.h"
+#include "Demos/Visualization/Visualization.h"
 #include "Discregrid/geometry/TriangleMeshDistance.h"
 #include "Simulation/Constraints.h"
 #include "Simulation/CubicSDFCollisionDetection.h"
@@ -28,12 +29,6 @@ using namespace Utilities;
 
 namespace
 {
-	struct SpringRef
-	{
-		RigidBodySpring *spring;
-		unsigned int span;
-	};
-
 	struct SausageState
 	{
 		Vector3r position = Vector3r(-3.0, 6.25, 0.0);
@@ -44,15 +39,19 @@ namespace
 
 	DemoBase *base = nullptr;
 	CubicSDFCollisionDetection *cd = nullptr;
+	ShapeMatchingConstraint *sausageGlobalShapeConstraint = nullptr;
 
-	vector<unsigned int> sausageBodies;
-	vector<SpringRef> sausageSprings;
 	vector<Vector3r> slideCenter;
 
-	const unsigned int numSoftBodies = 19;
+	const unsigned int invalidIndex = std::numeric_limits<unsigned int>::max();
+	unsigned int sausageTetModelIndex = invalidIndex;
+
+	const unsigned int sausageAxisSegments = 28;
+	const unsigned int sausageRadialSegments = 18;
 	const Real sausageLength = static_cast<Real>(2.75);
 	const Real sausageVisualRadius = static_cast<Real>(0.20);
-	const Real sausageCollisionRadius = static_cast<Real>(0.072);
+	const Real sausageParticleMass = static_cast<Real>(0.12);
+	const unsigned int positionSolverIterations = 12;
 	const Real slideHorizontalShift = static_cast<Real>(-0.25);
 	const Real slidePipeRadius = static_cast<Real>(0.82);
 	const Real slidePipeWallThickness = static_cast<Real>(0.16);
@@ -132,12 +131,10 @@ namespace
 		slideCenter.push_back(controls.back());
 	}
 
-	void loadCourseMeshes(VertexData &boxVd, IndexedFaceMesh &boxMesh,
-		VertexData &sphereVd, IndexedFaceMesh &sphereMesh)
+	void loadCourseMeshes(VertexData &boxVd, IndexedFaceMesh &boxMesh)
 	{
 		const string modelPath = base->getExePath() + "/resources/models/";
 		DemoBase::loadMesh(FileSystem::normalizePath(modelPath + "cube.obj"), boxVd, boxMesh, Vector3r::Zero(), Matrix3r::Identity(), Vector3r::Ones());
-		DemoBase::loadMesh(FileSystem::normalizePath(modelPath + "sphere.obj"), sphereVd, sphereMesh, Vector3r::Zero(), Matrix3r::Identity(), Vector3r::Ones());
 		boxMesh.setFlatShading(true);
 	}
 
@@ -212,50 +209,78 @@ namespace
 			vertices.data(), static_cast<unsigned int>(vertices.size()), scale);
 	}
 
-	Real springStiffness(const unsigned int span)
+	Real softness01()
 	{
-		const Real s = clampReal(softness, static_cast<Real>(0.0), static_cast<Real>(100.0)) / static_cast<Real>(100.0);
-		const Real hardPart = std::pow(static_cast<Real>(1.0) - s, static_cast<Real>(4.0));
-		const Real baseStiffness = static_cast<Real>(650.0) + hardPart * static_cast<Real>(6.0e6);
-		const Real spanScale = static_cast<Real>(1.0) / std::pow(static_cast<Real>(span), static_cast<Real>(0.25));
-		const Real longRangeBoost = span <= 2 ? static_cast<Real>(1.0) :
-			(span <= 6 ? static_cast<Real>(0.60) : static_cast<Real>(0.32));
-		return baseStiffness * spanScale * longRangeBoost;
+		return clampReal(softness, static_cast<Real>(0.0), static_cast<Real>(100.0)) / static_cast<Real>(100.0);
+	}
+
+	Real perIterationStiffness(const Real effectiveStiffness)
+	{
+		const Real target = clampReal(effectiveStiffness, static_cast<Real>(0.0), static_cast<Real>(1.0));
+		if (target <= static_cast<Real>(0.0))
+			return static_cast<Real>(0.0);
+		if (target >= static_cast<Real>(0.999))
+			return static_cast<Real>(1.0);
+		return static_cast<Real>(1.0) - std::pow(static_cast<Real>(1.0) - target,
+			static_cast<Real>(1.0) / static_cast<Real>(positionSolverIterations));
+	}
+
+	Real solidStiffness()
+	{
+		const Real s = softness01();
+		const Real target = static_cast<Real>(0.02) + static_cast<Real>(0.98) *
+			(static_cast<Real>(1.0) - std::pow(s, static_cast<Real>(1.5)));
+		return perIterationStiffness(target);
+	}
+
+	Real solidVolumeStiffness()
+	{
+		const Real s = softness01();
+		const Real target = static_cast<Real>(0.03) + static_cast<Real>(0.97) *
+			(static_cast<Real>(1.0) - std::pow(s, static_cast<Real>(1.3)));
+		return perIterationStiffness(target);
+	}
+
+	Real globalShapeMatchingStiffness()
+	{
+		const Real s = softness01();
+		return perIterationStiffness(std::pow(static_cast<Real>(1.0) - s, static_cast<Real>(3.0)));
+	}
+
+	Real collisionTolerance()
+	{
+		const Real s = softness01();
+		return static_cast<Real>(0.03) + static_cast<Real>(0.025) * (static_cast<Real>(1.0) - s);
 	}
 
 	void updateSoftness()
 	{
-		for (SpringRef &ref : sausageSprings)
-			ref.spring->m_stiffness = springStiffness(ref.span);
-
+		SimulationModel *model = Simulation::getCurrent()->getModel();
+		model->setSolidStiffness(solidStiffness());
+		model->setSolidVolumeStiffness(solidVolumeStiffness());
+		if (sausageGlobalShapeConstraint)
+			sausageGlobalShapeConstraint->m_stiffness = globalShapeMatchingStiffness();
+		if (cd)
+			cd->setTolerance(collisionTolerance());
 		LOG_INFO << "Sausage softness: " << softness << "%";
 		std::cout << "Sausage softness: " << softness << "%\n";
 	}
 
-	void addSpring(const unsigned int a, const unsigned int b, const unsigned int span)
+	void addTetCollisionObjectWithoutGeometry(const unsigned int tetModelIndex)
 	{
 		SimulationModel *model = Simulation::getCurrent()->getModel();
-		const SimulationModel::RigidBodyVector &rb = model->getRigidBodies();
-		const Vector3r pa = rb[a]->getPosition();
-		const Vector3r pb = rb[b]->getPosition();
-		if (model->addRigidBodySpring(a, b, pa, pb, springStiffness(span)))
-		{
-			Constraint *constraint = model->getConstraints().back();
-			sausageSprings.push_back({ static_cast<RigidBodySpring*>(constraint), span });
-		}
-	}
+		TetModel *tm = model->getTetModels()[tetModelIndex];
+		ParticleData &pd = model->getParticles();
+		const unsigned int offset = tm->getIndexOffset();
+		const IndexedTetMesh &mesh = tm->getParticleMesh();
 
-	void addSausageSprings()
-	{
-		sausageSprings.clear();
-		for (unsigned int i = 0; i < sausageBodies.size(); i++)
-		{
-			for (unsigned int j = i + 1; j < sausageBodies.size(); j++)
-			{
-				const unsigned int span = j - i;
-				addSpring(sausageBodies[i], sausageBodies[j], span);
-			}
-		}
+		cd->addCollisionObjectWithoutGeometry(tetModelIndex,
+			CollisionDetection::CollisionObject::TetModelCollisionObjectType,
+			&pd.getPosition(offset), mesh.numVertices(), true);
+
+		CollisionDetection::CollisionObject *co = cd->getCollisionObjects().back();
+		static_cast<DistanceFieldCollisionDetection::DistanceFieldCollisionObject*>(co)->initTetBVH(
+			&pd.getPosition(offset), mesh.numVertices(), mesh.getTets().data(), mesh.numTets(), cd->getTolerance());
 	}
 
 	SausageState defaultSausageState()
@@ -269,20 +294,25 @@ namespace
 	SausageState captureSausageState()
 	{
 		SausageState state = defaultSausageState();
-		const SimulationModel::RigidBodyVector &rb = Simulation::getCurrent()->getModel()->getRigidBodies();
-		if (!sausageBodies.empty())
+		SimulationModel *model = Simulation::getCurrent()->getModel();
+		if (sausageTetModelIndex != invalidIndex && sausageTetModelIndex < model->getTetModels().size())
 		{
+			TetModel *tm = model->getTetModels()[sausageTetModelIndex];
+			const ParticleData &pd = model->getParticles();
+			const unsigned int offset = tm->getIndexOffset();
+			const unsigned int nVert = tm->getParticleMesh().numVertices();
 			Vector3r center = Vector3r::Zero();
 			Vector3r velocity = Vector3r::Zero();
-			for (const unsigned int id : sausageBodies)
+			for (unsigned int i = 0; i < nVert; i++)
 			{
-				center += rb[id]->getPosition();
-				velocity += rb[id]->getVelocity();
+				center += pd.getPosition(offset + i);
+				velocity += pd.getVelocity(offset + i);
 			}
-			center /= static_cast<Real>(sausageBodies.size());
-			velocity /= static_cast<Real>(sausageBodies.size());
+			center /= static_cast<Real>(nVert);
+			velocity /= static_cast<Real>(nVert);
 
-			Vector3r axis = rb[sausageBodies.back()]->getPosition() - rb[sausageBodies.front()]->getPosition();
+			const unsigned int sliceVertexCount = sausageRadialSegments + 1;
+			Vector3r axis = pd.getPosition(offset + sausageAxisSegments * sliceVertexCount) - pd.getPosition(offset);
 			if (axis.norm() < static_cast<Real>(1.0e-5))
 				axis = Vector3r(0.0, 1.0, 0.0);
 			state.position = center;
@@ -505,6 +535,125 @@ namespace
 		addMeshSDFCollisionObject(ring, ringSDF);
 	}
 
+	Real signedTetVolume(const Vector3r &a, const Vector3r &b, const Vector3r &c, const Vector3r &d)
+	{
+		return (b - a).cross(c - a).dot(d - a) / static_cast<Real>(6.0);
+	}
+
+	void addOrientedTet(
+		std::vector<Vector3r> &points,
+		std::vector<unsigned int> &tets,
+		unsigned int a,
+		unsigned int b,
+		unsigned int c,
+		unsigned int d)
+	{
+		if (signedTetVolume(points[a], points[b], points[c], points[d]) < static_cast<Real>(0.0))
+			std::swap(b, c);
+		tets.push_back(a);
+		tets.push_back(b);
+		tets.push_back(c);
+		tets.push_back(d);
+	}
+
+	void buildSausageTetMesh(std::vector<Vector3r> &points, std::vector<unsigned int> &tets, const SausageState &state)
+	{
+		const Real pi = static_cast<Real>(3.14159265358979323846);
+		const unsigned int sliceVertexCount = sausageRadialSegments + 1;
+		const Matrix3r rotation = state.rotation.toRotationMatrix();
+		const Real halfLength = static_cast<Real>(0.5) * sausageLength;
+
+		points.clear();
+		tets.clear();
+		points.reserve((sausageAxisSegments + 1) * sliceVertexCount);
+		tets.reserve(sausageAxisSegments * sausageRadialSegments * 3 * 4);
+
+		for (unsigned int i = 0; i <= sausageAxisSegments; i++)
+		{
+			const Real alpha = static_cast<Real>(i) / static_cast<Real>(sausageAxisSegments);
+			const Real y = alpha * sausageLength - halfLength;
+			const Real capRoundness = static_cast<Real>(0.70) + static_cast<Real>(0.30) * std::sin(pi * alpha);
+			const Real radius = sausageVisualRadius * capRoundness;
+			points.push_back(state.position + rotation * Vector3r(0.0, y, 0.0));
+
+			for (unsigned int j = 0; j < sausageRadialSegments; j++)
+			{
+				const Real theta = static_cast<Real>(2.0) * pi * static_cast<Real>(j) / static_cast<Real>(sausageRadialSegments);
+				const Vector3r local(radius * std::cos(theta), y, radius * std::sin(theta));
+				points.push_back(state.position + rotation * local);
+			}
+		}
+
+		const auto centerIndex = [&](const unsigned int slice)
+		{
+			return slice * sliceVertexCount;
+		};
+		const auto ringIndex = [&](const unsigned int slice, const unsigned int segment)
+		{
+			return slice * sliceVertexCount + 1 + (segment % sausageRadialSegments);
+		};
+
+		for (unsigned int i = 0; i < sausageAxisSegments; i++)
+		{
+			for (unsigned int j = 0; j < sausageRadialSegments; j++)
+			{
+				const unsigned int a = centerIndex(i);
+				const unsigned int b = ringIndex(i, j);
+				const unsigned int c = ringIndex(i, j + 1);
+				const unsigned int d = centerIndex(i + 1);
+				const unsigned int e = ringIndex(i + 1, j);
+				const unsigned int f = ringIndex(i + 1, j + 1);
+
+				addOrientedTet(points, tets, a, b, c, d);
+				addOrientedTet(points, tets, b, e, c, d);
+				addOrientedTet(points, tets, c, e, f, d);
+			}
+		}
+	}
+
+	void createTetSausage(const SausageState &state)
+	{
+		SimulationModel *model = Simulation::getCurrent()->getModel();
+		std::vector<Vector3r> points;
+		std::vector<unsigned int> tets;
+		buildSausageTetMesh(points, tets, state);
+
+		sausageTetModelIndex = static_cast<unsigned int>(model->getTetModels().size());
+		model->addTetModel(static_cast<unsigned int>(points.size()), static_cast<unsigned int>(tets.size() / 4),
+			points.data(), tets.data());
+
+		TetModel *tm = model->getTetModels()[sausageTetModelIndex];
+		ParticleData &pd = model->getParticles();
+		const unsigned int offset = tm->getIndexOffset();
+		const unsigned int nVert = tm->getParticleMesh().numVertices();
+
+		tm->setInitialX(state.position);
+		tm->setInitialR(state.rotation.toRotationMatrix());
+		tm->setInitialScale(Vector3r::Ones());
+		tm->setRestitutionCoeff(static_cast<Real>(0.04));
+		tm->setFrictionCoeff(static_cast<Real>(0.03));
+
+		for (unsigned int i = 0; i < nVert; i++)
+		{
+			const Vector3r relative = pd.getPosition(offset + i) - state.position;
+			pd.setMass(offset + i, sausageParticleMass);
+			pd.setVelocity(offset + i, state.velocity + state.angularVelocity.cross(relative));
+		}
+
+		model->addSolidConstraints(tm, 1, solidStiffness(), static_cast<Real>(0.3), solidVolumeStiffness(), false, false);
+
+		std::vector<unsigned int> particleIndices(nVert);
+		std::vector<unsigned int> numClusters(nVert, 1u);
+		for (unsigned int i = 0; i < nVert; i++)
+			particleIndices[i] = offset + i;
+		if (model->addShapeMatchingConstraint(nVert, particleIndices.data(), numClusters.data(), globalShapeMatchingStiffness()))
+			sausageGlobalShapeConstraint = static_cast<ShapeMatchingConstraint*>(model->getConstraints().back());
+
+		tm->updateMeshNormals(pd);
+		addTetCollisionObjectWithoutGeometry(sausageTetModelIndex);
+		updateSoftness();
+	}
+
 	void createObstacles(const VertexData &boxVd, const IndexedFaceMesh &boxMesh)
 	{
 		const unsigned int platform = addBody(boxVd, boxMesh, static_cast<Real>(500.0),
@@ -530,28 +679,10 @@ namespace
 		IndexedFaceMesh pipeMesh;
 		buildHalfPipeMesh(pipeVd, pipeMesh);
 		const unsigned int pipeBody = addStaticVisualBody(pipeVd, pipeMesh, Vector3r::Zero(), Quaternionr::Identity(), Vector3r::Ones(),
-			static_cast<Real>(0.04), static_cast<Real>(0.01));
+			static_cast<Real>(0.04), static_cast<Real>(0.0));
 		CubicSDFCollisionDetection::GridPtr pipeSDF = generateMeshSDF(pipeVd, pipeMesh,
 			std::array<unsigned int, 3>({ 128u, 64u, 64u }), "procedural half-pipe slide");
 		addMeshSDFCollisionObject(pipeBody, pipeSDF);
-	}
-
-	void createSoftSausage(const VertexData &sphereVd, const IndexedFaceMesh &sphereMesh, const SausageState &state)
-	{
-		const Vector3r axis = state.rotation * Vector3r(0.0, 1.0, 0.0);
-		const Real halfLength = static_cast<Real>(0.5) * sausageLength;
-		for (unsigned int i = 0; i < numSoftBodies; i++)
-		{
-			const Real alpha = static_cast<Real>(i) / static_cast<Real>(numSoftBodies - 1);
-			const Vector3r x = state.position + (alpha * sausageLength - halfLength) * axis;
-			const unsigned int id = addBody(sphereVd, sphereMesh, static_cast<Real>(120.0),
-				x, Quaternionr::Identity(), sausageCollisionRadius * Vector3r::Ones(),
-				true, static_cast<Real>(0.04), static_cast<Real>(0.16), state.velocity, state.angularVelocity);
-			addCollisionSphere(id, sausageCollisionRadius);
-			sausageBodies.push_back(id);
-		}
-		addSausageSprings();
-		updateSoftness();
 	}
 
 	void createCourseModel(const SausageState &state)
@@ -562,18 +693,19 @@ namespace
 		model->cleanup();
 		cd->cleanup();
 		base->getSelectedParticles().clear();
-		sausageBodies.clear();
-		sausageSprings.clear();
+		sausageTetModelIndex = invalidIndex;
+		sausageGlobalShapeConstraint = nullptr;
 
 		model->setContactStiffnessRigidBody(static_cast<Real>(1.0));
 		model->setContactStiffnessParticleRigidBody(static_cast<Real>(100.0));
+		cd->setTolerance(collisionTolerance());
 
-		VertexData boxVd, sphereVd;
-		IndexedFaceMesh boxMesh, sphereMesh;
-		loadCourseMeshes(boxVd, boxMesh, sphereVd, sphereMesh);
+		VertexData boxVd;
+		IndexedFaceMesh boxMesh;
+		loadCourseMeshes(boxVd, boxMesh);
 
+		createTetSausage(state);
 		createObstacles(boxVd, boxMesh);
-		createSoftSausage(sphereVd, sphereMesh, state);
 	}
 
 	void reset()
@@ -615,23 +747,25 @@ namespace
 		}
 
 		const ParticleData &pd = model->getParticles();
+		for (unsigned int i = 0; i < model->getTetModels().size(); i++)
+		{
+			model->getTetModels()[i]->updateMeshNormals(pd);
+			model->getTetModels()[i]->updateVisMesh(pd);
+		}
 		for (unsigned int i = 0; i < model->getTriangleModels().size(); i++)
 			model->getTriangleModels()[i]->updateMeshNormals(pd);
 	}
 
-	void drawSausageOverlay()
+	void drawSausageTetSurface()
 	{
-		const SimulationModel::RigidBodyVector &rb = Simulation::getCurrent()->getModel()->getRigidBodies();
-		for (unsigned int i = 0; i + 1 < sausageBodies.size(); i++)
-		{
-			MiniGL::drawCylinder(rb[sausageBodies[i]]->getPosition(), rb[sausageBodies[i + 1]]->getPosition(),
-				sausageColor, static_cast<float>(sausageVisualRadius), 24);
-		}
-		for (unsigned int i = 0; i < sausageBodies.size(); i++)
-		{
-			MiniGL::drawSphere(rb[sausageBodies[i]]->getPosition(), static_cast<float>(sausageVisualRadius),
-				i == 0 ? sausageTipColor : sausageColor, 24);
-		}
+		SimulationModel *model = Simulation::getCurrent()->getModel();
+		if (sausageTetModelIndex == invalidIndex || sausageTetModelIndex >= model->getTetModels().size())
+			return;
+
+		TetModel *tm = model->getTetModels()[sausageTetModelIndex];
+		base->shaderBegin(sausageColor);
+		Visualization::drawMesh(model->getParticles(), tm->getSurfaceMesh(), tm->getIndexOffset(), sausageColor);
+		base->shaderEnd();
 	}
 
 	void render()
@@ -642,27 +776,32 @@ namespace
 		visibleConstraints.reserve(constraints.size());
 		for (Constraint *constraint : constraints)
 		{
-			if (constraint->getTypeId() != RigidBodySpring::TYPE_ID)
-				visibleConstraints.push_back(constraint);
+			visibleConstraints.push_back(constraint);
 		}
 		constraints.swap(visibleConstraints);
+
+		SimulationModel::TetModelVector &tetModels = model->getTetModels();
+		SimulationModel::TetModelVector hiddenTetModels;
+		tetModels.swap(hiddenTetModels);
 		base->render();
+		tetModels.swap(hiddenTetModels);
+
 		constraints.swap(visibleConstraints);
 
-		drawSausageOverlay();
+		drawSausageTetSurface();
 	}
 
 	void buildModel()
 	{
-		TimeManager::getCurrent()->setTimeStepSize(static_cast<Real>(0.005));
+		TimeManager::getCurrent()->setTimeStepSize(static_cast<Real>(0.006));
 		SimulationModel *model = Simulation::getCurrent()->getModel();
 		Simulation::getCurrent()->getTimeStep()->setCollisionDetection(*model, cd);
 
 		TimeStepController *timeStep = static_cast<TimeStepController*>(Simulation::getCurrent()->getTimeStep());
 		timeStep->setValue(TimeStepController::NUM_SUB_STEPS, 6u);
-		timeStep->setValue(TimeStepController::MAX_ITERATIONS, 14u);
-		timeStep->setValue(TimeStepController::MAX_ITERATIONS_V, 12u);
-		base->setValue(DemoBase::NUM_STEPS_PER_RENDER, 2u);
+		timeStep->setValue(TimeStepController::MAX_ITERATIONS, positionSolverIterations);
+		timeStep->setValue(TimeStepController::MAX_ITERATIONS_V, 10u);
+		base->setValue(DemoBase::NUM_STEPS_PER_RENDER, 4u);
 
 		createCourseModel(defaultSausageState());
 	}
@@ -703,7 +842,7 @@ int main(int argc, char **argv)
 		<< "  r: reset current softness\n"
 		<< "  +/-: softness -/+ 10%\n"
 		<< "  0/1/5/9: 0%, 10%, 50%, 100% softness\n"
-		<< "  All softness values use the same native rigid-body spring chain.\n";
+		<< "  All softness values use the same native tetrahedral solid model.\n";
 
 	MiniGL::mainLoop();
 
