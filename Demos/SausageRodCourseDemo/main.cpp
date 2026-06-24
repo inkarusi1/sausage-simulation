@@ -33,6 +33,7 @@ namespace
 		Vector3r x = Vector3r::Zero();
 		Vector3r oldX = Vector3r::Zero();
 		Vector3r v = Vector3r::Zero();
+		Vector3r predictedV = Vector3r::Zero();
 		Real invMass = static_cast<Real>(1.0);
 	};
 
@@ -40,6 +41,7 @@ namespace
 	{
 		Vector3r normal = Vector3r::Zero();
 		Real friction = static_cast<Real>(0.0);
+		Real restitution = static_cast<Real>(0.0);
 		unsigned int count = 0u;
 	};
 
@@ -462,7 +464,7 @@ namespace
 	{
 		const unsigned int platform = addBody(boxVd, boxMesh, static_cast<Real>(500.0),
 			Vector3r(3.0, -0.70, 0.0), Quaternionr::Identity(), Vector3r(18.0, 0.55, 6.5),
-			false, static_cast<Real>(0.08), static_cast<Real>(0.90));
+			false, static_cast<Real>(0.35), static_cast<Real>(0.90));
 		addCollisionBox(platform, Vector3r(18.0, 0.55, 6.5));
 
 		VertexData ringVd;
@@ -509,6 +511,7 @@ namespace
 			rod[i].x = center + restLocal[i];
 			rod[i].oldX = rod[i].x;
 			rod[i].v = Vector3r::Zero();
+			rod[i].predictedV = Vector3r::Zero();
 			rod[i].invMass = static_cast<Real>(1.0) / sausageMassPerPoint;
 		}
 	}
@@ -605,7 +608,7 @@ namespace
 		solveShapeMatching();
 	}
 
-	void addContact(const unsigned int i, const Vector3r &normal, const Real friction)
+	void addContact(const unsigned int i, const Vector3r &normal, const Real friction, const Real restitution)
 	{
 		if (i >= contacts.size())
 			return;
@@ -613,6 +616,7 @@ namespace
 			return;
 		contacts[i].normal += normal.normalized();
 		contacts[i].friction = std::max(contacts[i].friction, friction);
+		contacts[i].restitution = std::max(contacts[i].restitution, restitution);
 		contacts[i].count++;
 	}
 
@@ -622,7 +626,8 @@ namespace
 		const Real t,
 		const Vector3r &correction,
 		const Vector3r &normal,
-		const Real friction)
+		const Real friction,
+		const Real restitution)
 	{
 		const Real wa = static_cast<Real>(1.0) - t;
 		const Real wb = t;
@@ -635,9 +640,9 @@ namespace
 		rod[a].x += (wa * invA / denom) * correction;
 		rod[b].x += (wb * invB / denom) * correction;
 		if (wa > static_cast<Real>(0.001))
-			addContact(a, normal, friction);
+			addContact(a, normal, friction, restitution);
 		if (wb > static_cast<Real>(0.001))
-			addContact(b, normal, friction);
+			addContact(b, normal, friction, restitution);
 	}
 
 	void collideSampleWithObjects(const unsigned int a, const unsigned int b, const Real t)
@@ -676,7 +681,8 @@ namespace
 				const Real maxCorrection = static_cast<Real>(0.12);
 				if (len > maxCorrection)
 					correction *= maxCorrection / len;
-				applyCorrectionToSample(a, b, t, correction, nWorld, body->getFrictionCoeff());
+				applyCorrectionToSample(a, b, t, correction, nWorld,
+					body->getFrictionCoeff(), body->getRestitutionCoeff());
 			}
 		}
 	}
@@ -687,6 +693,7 @@ namespace
 		{
 			c.normal.setZero();
 			c.friction = static_cast<Real>(0.0);
+			c.restitution = static_cast<Real>(0.0);
 			c.count = 0u;
 		}
 	}
@@ -719,11 +726,13 @@ namespace
 			n.normalize();
 
 			const Real vn = rod[i].v.dot(n);
-			if (vn < static_cast<Real>(0.0))
-				rod[i].v -= vn * n;
+			const Real impactVn = rod[i].predictedV.dot(n);
+			Real normalSpeed = std::max(vn, static_cast<Real>(0.0));
+			if (impactVn < static_cast<Real>(-0.05))
+				normalSpeed = std::max(normalSpeed, -contacts[i].restitution * impactVn);
 
-			const Vector3r normalV = rod[i].v.dot(n) * n;
-			const Vector3r tangentV = rod[i].v - normalV;
+			const Vector3r tangentV = rod[i].v - vn * n;
+			const Vector3r normalV = normalSpeed * n;
 			const Real tangentDamping = clampReal(contacts[i].friction * static_cast<Real>(0.18),
 				static_cast<Real>(0.0), static_cast<Real>(0.85));
 			rod[i].v = normalV + (static_cast<Real>(1.0) - tangentDamping) * tangentV;
@@ -737,6 +746,7 @@ namespace
 		{
 			p.oldX = p.x;
 			p.v += timeStepSize * Vector3r(0.0, gravityY, 0.0);
+			p.predictedV = p.v;
 			p.x += timeStepSize * p.v;
 		}
 
