@@ -50,6 +50,9 @@ Build_SausageCourseDemo:BOOL=ON
 //Build SausagePhysicsCourseDemo
 Build_SausagePhysicsCourseDemo:BOOL=ON
 
+//Build SausageRodCourseDemo
+Build_SausageRodCourseDemo:BOOL=ON
+
 //Build SceneLoaderDemo
 Build_SceneLoaderDemo:BOOL=ON
 
@@ -478,7 +481,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MT
 CMAKE_MT-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=22
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=23
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
 //noop for ranlib

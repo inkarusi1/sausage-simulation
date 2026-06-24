@@ -11,6 +11,7 @@ set(PBD_DEMOS
 	GenericConstraintsDemos
 	PositionBasedElasticRodsDemo
 	RigidBodyDemos
+	SausageRodCourseDemo
 	SausagePhysicsCourseDemo
 	SceneLoaderDemo
 	SausageCourseDemo
