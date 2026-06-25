@@ -8,28 +8,45 @@
 
 ## 构建说明（首次 clone 后必读）
 
-> **git 仓库只包含源码和依赖头文件，不包含 `build-vs2/` 编译目录。**
-> clone 后需先运行 CMake 生成 VS 项目，再用 MSBuild 编译。
+> **git 仓库只包含源码、运行资源和必要的第三方源码，不包含 `build-vs2/` 编译目录和 `bin/*.exe`。**
+> clone 后运行脚本即可生成 VS 项目并编译 Release 版。
 
 ### 前提条件
 
 - Windows 10/11 64-bit
 - Visual Studio 2022（含 **"使用 C++ 的桌面开发"** 工作负载，内含 MSBuild 和 CMake）
+- 不需要提交或下载 `build-vs2/`、`.pdb`、`.lib`、`.obj` 等大文件；这些都会本地生成。
 
 ### 一键构建（推荐）
 
 在仓库根目录打开 PowerShell，执行：
 
 ```powershell
-.\setup_and_build.ps1
+powershell -ExecutionPolicy Bypass -File .\setup_and_build.ps1
 ```
 
 脚本会自动完成：
-1. 调用 CMake 生成 `build-vs2/`（首次约 1 分钟）
-2. 用 MSBuild 编译 `SausageRodEditorDemo`（Release x64）
-3. 产物输出到 `bin/SausageRodEditorDemo.exe`
+1. 自动查找 Visual Studio / Build Tools 的 CMake 和 MSBuild。
+2. 调用 CMake 生成 `build-vs2/`。
+3. 使用仓库内置的 `extern/Discregrid` 和 `extern/GenericParameters` 源码构建依赖，通常不需要联网下载外部项目。
+4. 编译 `SausageRodEditorDemo`（Release x64）。
+5. 复制 `data/models`、shader 和字体资源到 `bin/resources/`。
+6. 产物输出到 `bin/SausageRodEditorDemo.exe`。
 
-> 若 PowerShell 报"执行策略"错误，先运行：`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+常用参数：
+
+```powershell
+# 重新生成构建目录
+powershell -ExecutionPolicy Bypass -File .\setup_and_build.ps1 -Rebuild
+
+# Debug 版，仅开发调试时需要
+powershell -ExecutionPolicy Bypass -File .\setup_and_build.ps1 -Config Debug
+
+# 使用自定义构建目录
+powershell -ExecutionPolicy Bypass -File .\setup_and_build.ps1 -BuildDir build-local
+```
+
+> 若直接执行 `.\setup_and_build.ps1` 报“执行策略”错误，用上面的 `powershell -ExecutionPolicy Bypass -File ...` 形式即可，不需要修改系统策略。
 
 ### 手动构建
 
@@ -47,7 +64,7 @@ cmake -S . -B build-vs2 -G "Visual Studio 17 2022" -A x64
   /p:Configuration=Release /p:Platform=x64 /m
 ```
 
-> Community 版用户将路径中的 `Professional` 改为 `Community`。
+> Community / Enterprise / Build Tools 的 MSBuild 路径不同；推荐优先用 `setup_and_build.ps1`，脚本会自动查找。
 
 **第三步：运行**
 
@@ -62,10 +79,30 @@ SausageRodEditorDemo.exe
 | --- | --- | --- |
 | `Demos/`, `PositionBasedDynamics/`, 等 | ✓ 已追踪 | C++ 源码 |
 | `extern/` | ✓ 已追踪 | 第三方依赖头文件（eigen、glfw、imgui 等） |
+| `extern/Discregrid`, `extern/GenericParameters` | ✓ 已追踪 | 构建所需外部源码的最小副本，避免首次构建时必须联网 |
 | `data/` | ✓ 已追踪 | 模型、场景 JSON、SDF 缓存 |
 | `build-vs2/` | ✗ 忽略 | CMake 生成的 VS 项目 + 编译中间产物（~900MB） |
 | `bin/*.exe` | ✗ 忽略 | 编译输出的可执行文件 |
 | `bin/resources/` | ✗ 忽略 | 构建时自动从 `data/` 复制的运行时资源 |
+
+### 提交前检查
+
+GitHub 单文件超过 100MB 无法普通上传。本项目的 `.gitignore` 已忽略常见大产物：
+
+- `build*/`
+- `bin/*.exe`
+- `*.pdb`
+- `*.lib`
+- `*.obj`
+- `*.ilk`
+
+提交前建议执行：
+
+```powershell
+git status --short --ignored
+```
+
+只应提交源码、文档、`data/` 资源和 `extern/` 中必要依赖源码，不要提交本地编译产物。
 
 ---
 

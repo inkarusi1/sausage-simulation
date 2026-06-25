@@ -45,15 +45,29 @@ if ((DEFINED Discregrid_INCLUDE_DIR) AND (DEFINED Discregrid_DEBUG_LIB) AND (DEF
 	message(STATUS "Using ${Discregrid_INCLUDE_DIR}")
 	set(Discregrid_LIBRARIES optimized ${Discregrid_LIB} debug ${Discregrid_DEBUG_LIB})
 else()
-	ExternalProject_Add(
-	   Ext_Discregrid
-	   PREFIX "${CMAKE_BINARY_DIR}/extern/Discregrid"
-	   GIT_REPOSITORY https://github.com/InteractiveComputerGraphics/Discregrid.git
-	   GIT_TAG "ddf20dc0480874bf02e0bdc6ded76c1f101b17fb"
-	   INSTALL_DIR ${ExternalInstallDir}/Discregrid
-	   CMAKE_ARGS -DCMAKE_BUILD_TYPE:STRING=${EXT_CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${ExternalInstallDir}/Discregrid
-	   -DBUILD_CMD_EXECUTABLE:BOOL=0 -DEIGEN3_INCLUDE_DIR:PATH=${EIGEN3_INCLUDE_DIR} -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS} -DCMAKE_POLICY_VERSION_MINIMUM=3.10 
-	) 
+	set(Discregrid_SOURCE_DIR "${PROJECT_SOURCE_DIR}/extern/Discregrid")
+	if (EXISTS "${Discregrid_SOURCE_DIR}/CMakeLists.txt")
+		message(STATUS "Using bundled Discregrid source: ${Discregrid_SOURCE_DIR}")
+		ExternalProject_Add(
+		   Ext_Discregrid
+		   PREFIX "${CMAKE_BINARY_DIR}/extern/Discregrid"
+		   SOURCE_DIR "${Discregrid_SOURCE_DIR}"
+		   UPDATE_COMMAND ""
+		   INSTALL_DIR ${ExternalInstallDir}/Discregrid
+		   CMAKE_ARGS -DCMAKE_BUILD_TYPE:STRING=${EXT_CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${ExternalInstallDir}/Discregrid
+		   -DBUILD_CMD_EXECUTABLE:BOOL=0 -DEIGEN3_INCLUDE_DIR:PATH=${EIGEN3_INCLUDE_DIR} -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS} -DCMAKE_POLICY_VERSION_MINIMUM=3.10 
+		)
+	else()
+		ExternalProject_Add(
+		   Ext_Discregrid
+		   PREFIX "${CMAKE_BINARY_DIR}/extern/Discregrid"
+		   GIT_REPOSITORY https://github.com/InteractiveComputerGraphics/Discregrid.git
+		   GIT_TAG "ddf20dc0480874bf02e0bdc6ded76c1f101b17fb"
+		   INSTALL_DIR ${ExternalInstallDir}/Discregrid
+		   CMAKE_ARGS -DCMAKE_BUILD_TYPE:STRING=${EXT_CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${ExternalInstallDir}/Discregrid
+		   -DBUILD_CMD_EXECUTABLE:BOOL=0 -DEIGEN3_INCLUDE_DIR:PATH=${EIGEN3_INCLUDE_DIR} -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS} -DCMAKE_POLICY_VERSION_MINIMUM=3.10 
+		)
+	endif()
 	ExternalProject_Get_Property(Ext_Discregrid INSTALL_DIR)
 	set(Discregrid_INCLUDE_DIR ${INSTALL_DIR}/include)
 	set(Discregrid_LIBRARIES optimized ${INSTALL_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}Discregrid${CMAKE_STATIC_LIBRARY_SUFFIX} 
@@ -66,14 +80,27 @@ if (DEFINED GenericParameters_INCLUDE_DIR)
 	message(STATUS "Using ${GenericParameters_INCLUDE_DIR}")
 else()
 	## GenericParameters
-	ExternalProject_Add(
-	   Ext_GenericParameters
-	   PREFIX "${ExternalInstallDir}/GenericParameters"
-	   GIT_REPOSITORY https://github.com/InteractiveComputerGraphics/GenericParameters.git
-	   GIT_TAG "a4e2744eea526270cfe38b826440d09f66473316"
-	   INSTALL_DIR ${ExternalInstallDir}/GenericParameters
-	   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${EXT_CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${ExternalInstallDir}/GenericParameters -DGENERICPARAMETERS_NO_TESTS:BOOL=1 -DCMAKE_POLICY_VERSION_MINIMUM=3.10 		
-	) 
+	set(GenericParameters_SOURCE_DIR "${PROJECT_SOURCE_DIR}/extern/GenericParameters")
+	if (EXISTS "${GenericParameters_SOURCE_DIR}/CMakeLists.txt")
+		message(STATUS "Using bundled GenericParameters source: ${GenericParameters_SOURCE_DIR}")
+		ExternalProject_Add(
+		   Ext_GenericParameters
+		   PREFIX "${ExternalInstallDir}/GenericParameters"
+		   SOURCE_DIR "${GenericParameters_SOURCE_DIR}"
+		   UPDATE_COMMAND ""
+		   INSTALL_DIR ${ExternalInstallDir}/GenericParameters
+		   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${EXT_CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${ExternalInstallDir}/GenericParameters -DGENERICPARAMETERS_NO_TESTS:BOOL=1 -DCMAKE_POLICY_VERSION_MINIMUM=3.10 		
+		)
+	else()
+		ExternalProject_Add(
+		   Ext_GenericParameters
+		   PREFIX "${ExternalInstallDir}/GenericParameters"
+		   GIT_REPOSITORY https://github.com/InteractiveComputerGraphics/GenericParameters.git
+		   GIT_TAG "a4e2744eea526270cfe38b826440d09f66473316"
+		   INSTALL_DIR ${ExternalInstallDir}/GenericParameters
+		   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${EXT_CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX:PATH=${ExternalInstallDir}/GenericParameters -DGENERICPARAMETERS_NO_TESTS:BOOL=1 -DCMAKE_POLICY_VERSION_MINIMUM=3.10 		
+		)
+	endif()
 	ExternalProject_Get_Property(Ext_GenericParameters INSTALL_DIR)
 	set(GenericParameters_INCLUDE_DIR ${INSTALL_DIR}/include)
 	unset(INSTALL_DIR)
