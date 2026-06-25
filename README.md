@@ -1,160 +1,59 @@
-# PositionBasedDynamics
+# PositionBasedDynamics 课程项目文档入口
 
-<p align=center><img src="https://github.com/InteractiveComputerGraphics/PositionBasedDynamics/workflows/build-linux/badge.svg">&nbsp;&nbsp; <img src="https://github.com/InteractiveComputerGraphics/PositionBasedDynamics/workflows/build-linux-wheels/badge.svg">&nbsp;&nbsp; <img src="https://github.com/InteractiveComputerGraphics/PositionBasedDynamics/workflows/build-windows/badge.svg">&nbsp;&nbsp; <img src="https://github.com/InteractiveComputerGraphics/PositionBasedDynamics/workflows/build-windows-wheels/badge.svg">&nbsp;&nbsp; <a href='https://positionbaseddynamics.readthedocs.io/en/latest/?badge=latest'><img src='https://readthedocs.org/projects/positionbaseddynamics/badge/?version=latest' alt='Documentation Status' /></a></p>
+本仓库是在开源项目 PositionBasedDynamics 基础上完成虚拟现实实验课程期末项目的工作区。原开源项目 README 已保留为：
 
-This library supports the physically-based simulation of mechanical effects. In the last years position-based simulation methods have become popular in the graphics community. In contrast to classical simulation approaches these methods compute the position changes in each simulation step directly, based on the solution of a quasi-static problem. Therefore, position-based approaches are fast, stable and controllable which make them well-suited for use in interactive environments. However, these methods are generally not as accurate as force-based methods but still provide visual plausibility. Hence, the main application areas of position-based simulation are virtual reality, computer games and special effects in movies and commercials.
+- `README.old.md`：PositionBasedDynamics 上游项目介绍、依赖、构建和原始功能说明。
 
-The PositionBasedDynamics library allows the position-based handling of many types of constraints in a physically-based simulation. The library uses [CMake](http://www.cmake.org/), [Eigen](http://eigen.tuxfamily.org/), [json](https://github.com/nlohmann/json/), [pybind](https://github.com/pybind/pybind11), [glfw](https://www.glfw.org/), [hapPLY](https://github.com/nmwsharp/happly) and [imgui](https://github.com/ocornut/imgui) (only for the demos). All external dependencies are included. 
+当前课程项目主要关注“香肠下落、圆环、半管滑轨、平台、柔软度控制、暂停编辑”等演示功能。建议优先阅读下面几份本地文档。
 
-Furthermore we use our own library:
-- [Discregrid](https://github.com/InteractiveComputerGraphics/Discregrid/) to generate cubic signed distance fields for the collision detection
+## 文档导航
 
+| 文档 | 用途 | 建议阅读时机 |
+| --- | --- | --- |
+| `REF.md` | 物理仿真和源码设计参考。包含原仓库刚体、软体、布料、SDF、接触冲量、重力、场景构建等位置说明，也记录了课程新增 demo 的可复用设计。 | 修改物理效果、碰撞、柔软度、SDF、运行时编辑实现时先看。 |
+| `OP.md` | 键鼠操作和快捷键冲突参考。区分原仓库全局操作、已有 demo 快捷键和 `SausageRodEditorDemo` 的暂停编辑操作。 | 增加交互、改快捷键、调试鼠标操作前先看。 |
+| `EXT.md` | 扩展功能调研与当前落地状态。说明原仓库暂停后为什么不能直接编辑物体，以及当前新增 demo 已实现/未实现的编辑能力。 | 想继续扩展拖动、旋转、缩放、新增、删除、保存场景时先看。 |
+| `EXP.md` | 本次课程项目迭代中的必要设计与调试经验总结。 | 回顾为什么采用当前方案、避免重复踩坑时看。 |
 
-**Author**: [Jan Bender](http://www.interactive-graphics.de), **License**: MIT
+## 当前主要 demo
 
-## News
+| Demo | 可执行文件 | 说明 |
+| --- | --- | --- |
+| `SausageRodEditorDemo` | `bin/SausageRodEditorDemo.exe` | 当前推荐入口。基于中心线杆香肠，支持暂停后选择、拖动、移动、旋转、缩放盒体、新增/删除盒体。 |
+| `SausageRodCourseDemo` | `bin/SausageRodCourseDemo.exe` | 较轻量的香肠物理过程 demo，无暂停编辑层。 |
+| `SausagePhysicsCourseDemo` | `bin/SausagePhysicsCourseDemo.exe` | 早期四面体/软体方向实现，保留作对比。 |
 
-* We added a Python interface: [pyPBD](https://pypi.org/project/pyPBD/)
-* Our new [paper](https://animation.rwth-aachen.de/publication/0557/) about a Direct Position-Based Solver for Stiff Rods uses the PositionBasedDynamics library. You can watch the video  [here](https://www.youtube.com/watch?v=EFH9xt4omls).
-* PBD now has a collision detection based on cubic signed distance fields
-* SPlisHSPlasH is our new open-source fluid simulator which uses the PositionBasedDynamics library to handle rigid-fluid coupling. It can be downloaded here:
-[https://github.com/InteractiveComputerGraphics/SPlisHSPlasH](https://github.com/InteractiveComputerGraphics/SPlisHSPlasH)
-* Our new [paper](http://interactive-graphics.de/index.php/research/98-hierarchical-hp-adaptive-signed-distance-fields) about adaptive signed distance fields uses the PositionBasedDynamics library. You can watch the video  [here](https://www.youtube.com/watch?v=x_Iq2yM4FcA).
+## 推荐阅读顺序
 
-## Documentation
+1. 只想运行或演示：先看 `OP.md` 的 `SausageRodEditorDemo` 暂停编辑操作。
+2. 想理解为什么这样设计：看 `EXP.md`，再看 `REF.md` 的“新增课程 demo 的可复用设计”。
+3. 想继续开发暂停编辑器：看 `EXT.md`，再对照 `OP.md` 避免快捷键冲突。
+4. 想回到原仓库功能或 JSON 场景：看 `REF.md` 和 `README.old.md`。
 
-The documentation can be found here: 
+## 运行提示
 
-* [Documentation](https://positionbaseddynamics.readthedocs.io)
+从 `bin` 目录直接运行推荐 demo：
 
-## Forum
-
-On our [GitHub discussions](https://github.com/InteractiveComputerGraphics/PositionBasedDynamics/discussions) page you can ask questions, discuss about simulation topics, and share ideas.
-
-## Build Instructions
-
-This project is based on [CMake](https://cmake.org/). Simply generate project, Makefiles, etc. using [CMake](https://cmake.org/) and compile the project with the compiler of your choice. The code was tested with the following configurations:
-- Windows 10 64-bit, CMake 3.9.5, Visual Studio 2019
-- Debian 9 64-bit, CMake 3.12.3, GCC 6.3.0.
-
-Note: Please use a 64-bit target on a 64-bit operating system. 32-bit builds on a 64-bit OS are not supported.
-
-## Python Installation Instruction
-
-For Windows and Linux targets there exists prebuilt python wheel files which can be installed using
-
-```
-pip install pypbd
+```bat
+SausageRodEditorDemo.exe
 ```
 
-These are available for different Python Versions. See also here: [pyPBD](https://pypi.org/project/pyPBD/).
-If you do not meet these conditions please refer to the build instructions and to the python binding 
-[Getting started guide](https://positionbaseddynamics.readthedocs.io/en/latest/py_getting_started.html).
+常用操作：
 
-## Latest Important Changes
+- Space：暂停/继续。
+- 暂停后左键拖动：选择并移动最近可编辑对象。
+- 暂停后 `q`：切换选中对象。
+- 暂停后 `i/k/j/l/u/o`：沿 y/x/z 轴移动。
+- 暂停后 `z/x`：绕 y 轴旋转。
+- 暂停后 `[` / `]`：缩放盒体类对象。
+- 暂停后 `n` / `d`：新增/删除编辑器新增盒体。
 
-* GUI is now based on [imgui](https://github.com/ocornut/imgui)
-* added support of PLY files
-* added Python binding
-* added some XPBD constraints
-* added OBJ export
-* added substepping
-* added DamperJoint
-* improved implementation of slider and hinge joints/motors
-* Crispin Deul added the implementation of his paper Deul, Kugelstadt, Weiler, Bender, "Direct Position-Based Solver for Stiff Rods", Computer Graphics Forum 2018 and a corresponding demo
-* added collision detection for arbitrary meshes based on cubic signed distance fields
-* added implementation of the paper Kugelstadt, Schoemer, "Position and Orientation Based Cosserat Rods", SCA 2016
-* removed Boost dependency
-* added SceneGenerator.py to generate new scenarios easily by simple Python scripting
-* added scene loader based on json 
-* added collision detection based on distance functions
-* added collision handling for rigid and deformable bodies
-* high resolution visualization mesh can be attached to a deformable body
-* added support for Mac OS X
-* added automatic computation of inertia tensor for arbitrary triangle meshes
-* added OBJ file loader
-* parallelized unified solver using graph coloring
-* implemented unified solver for rigid bodies and deformable solids 
+更完整的键鼠说明以 `OP.md` 为准。
 
+## 开发注意
 
-
-## Features
-
-* Physically-based simulation with (eXtended) position-based constraint handling.
-* Simple interface
-* Demos 
-* Library is free even for commercial applications.
-* Collision detection based on cubic signed distance fields
-* Library supports many constraints: 
-	- Elastic rods:
-		- bend-twist constraint
-		- stretch-shear constraint
-		- Cosserat constraint
-	- Deformable solids:		
-		- point-point distance constraint (PBD & XPBD)
-		- point-edge distance constraint
-		- point-triangle distance constraint
-		- edge-edge distance constraint
-		- dihedral bending constraint
-		- isometric bending constraint (PBD & XPBD)
-		- volume constraint (PBD & XPBD)
-		- shape matching
-		- FEM-based PBD (2D & 3D)
-		- strain-based dynamics (2D & 3D)
-	- Fluids:
-		- position-based fluids 
-	- Rigid bodies:
-		- contact constraints
-		- ball joint
-		- ball-on-line-joint
-		- hinge joint
-		- target angle motor hinge joint
-		- target velocity motor hinge joint
-		- universal joint
-		- slider joint
-		- target position motor slider joint
-		- target velocity motor slider joint
-		- ball joint between rigid body and particle
-		- distance joint
-		- damper joint
-		- implicit spring
-	- Generic constraints
-
-## Videos
-
-The following videos were generated using the PositionBasedDynamics library:
-
-*Hierarchical hp-Adaptive Signed Distance Fields* | *Direct Position-Based Solver for Stiff Rods*
-:---:|:---:
-[![Video](https://img.youtube.com/vi/x_Iq2yM4FcA/0.jpg)](https://www.youtube.com/watch?v=x_Iq2yM4FcA) | [![Video](https://img.youtube.com/vi/EFH9xt4omls/0.jpg)](https://www.youtube.com/watch?v=EFH9xt4omls)
-
-
-## Screenshots
-
-|![](https://raw.githubusercontent.com/InteractiveComputerGraphics/PositionBasedDynamics/master/doc/images/PBD1.jpg)|![](https://raw.githubusercontent.com/InteractiveComputerGraphics/PositionBasedDynamics/master/doc/images/PBD2.jpg)|
-|--|--|
-
-## References
-
-* J. Bender, M. Müller and M. Macklin, "Position-Based Simulation Methods in Computer Graphics", In Tutorial Proceedings of Eurographics, 2015
-* J. Bender, D. Koschier, P. Charrier and D. Weber, ""Position-based simulation of continuous materials", Computers & Graphics 44, 2014
-* J. Bender, M. Müller, M. A. Otaduy, M. Teschner and M. Macklin, "A Survey on Position-Based Simulation Methods in Computer Graphics", Computer Graphics Forum 33, 6, 2014
-* C. Deul, T. Kugelstadt, M. Weiler, J. Bender, "Direct Position-Based Solver for Stiff Rods", Computer Graphics Forum, 2018
-* C. Deul, P. Charrier and J. Bender, "Position-Based Rigid Body Dynamics", Computer Animation and Virtual Worlds, 2014
-* D. Koschier, C. Deul, M. Brand and J. Bender, "An hp-Adaptive Discretization Algorithm for Signed Distance Field Generation", IEEE Transactions on Visualization and Computer Graphics 23, 2017
-* M. Macklin, M. Müller, N. Chentanez and T.Y. Kim, "Unified particle physics for real-time applications", ACM Trans. Graph. 33, 4, 2014
-* M. Müller, N. Chentanez, T.Y. Kim, M. Macklin, "Strain based dynamics", In Proceedings of the 2014 ACM
-SIGGRAPH/Eurographics Symposium on Computer Animation, 2014
-* J. Bender, D. Weber and R. Diziol, "Fast and stable cloth simulation based on multi-resolution shape matching", Computers & Graphics 37, 8, 2013
-* R. Diziol, J. Bender and D. Bayer, "Robust Real-Time Deformation of Incompressible Surface Meshes", In Proceedings of ACM SIGGRAPH / EUROGRAPHICS Symposium on Computer Animation (SCA), 2011
-* M. Müller and N. Chentanez, "Solid simulation with oriented particles", ACM Trans. Graph. 30, 4, 2011
-* M. Müller, "Hierarchical Position Based Dynamics", In VRIPHYS 08: Fifth Workshop in Virtual Reality Interactions and Physical Simulations, 2008 
-* M. Müller, B. Heidelberger, M. Hennix and J. Ratcliff, "Position based dynamics", Journal of Visual Communication and Image Representation 18, 2, 2007
-* M. Müller, B. Heidelberger, M. Teschner and M. Gross, "Meshless deformations based on shape matching", ACM Trans. Graph. 24, 3, 2005
-* M. Macklin and M. Müller, "Position based fluids", ACM Trans. Graph. 32, 4, 2013
-* Dan Koschier, Crispin Deul and Jan Bender, "Hierarchical hp-Adaptive Signed Distance Fields", In Proceedings of ACM SIGGRAPH / EUROGRAPHICS Symposium on Computer Animation (SCA), 2016
-* Tassilo Kugelstadt, Elmar Schoemer, "Position and Orientation Based Cosserat Rods", In Proceedings of ACM SIGGRAPH / EUROGRAPHICS Symposium on Computer Animation (SCA), 2016
-* M. Macklin, M. Müller and N. Chentanez, "XPBD: Position-based Simulation of Compliant Constrained Dynamics", Proceedings of the 9th International Conference on Motion in Games (MIG), 2016
-
-
-
+- 原仓库的通用加载和物理步进主要通过 `SceneLoaderDemo`、`SimulationModel`、`TimeStepController`、`CubicSDFCollisionDetection` 等实现。
+- 课程新增的香肠 demo 为手写 C++ 场景，不完全等同于 JSON 场景加载流程。
+- 暂停编辑能力目前属于 `SausageRodEditorDemo` 的局部功能，不是全仓库通用编辑器。
+- 复杂 SDF 物体运行时不建议直接缩放；应重建网格和 SDF，避免视觉与碰撞错位。
+- 删除原始场景对象会牵动刚体下标、碰撞对象和约束引用；当前只允许删除编辑器新增盒体。

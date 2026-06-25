@@ -1,282 +1,218 @@
-# PositionBasedDynamics 运行时暂停编辑能力调研
+# SausageRodEditorDemo 后续功能可行性分析
 
-本文记录对“项目运行后按空格暂停时，能否用鼠标拖动物品、缩放物品、旋转物品、新增/删除物品”的调研和改造建议。它不是仓库已有功能清单，而是以后为项目设计交互式编辑功能时的参考。
+本文记录基于 `README.md`、`EXT.md`、`OP.md`、`REF.md`、`EXP.md` 和 `Demos/SausageRodEditorDemo/main.cpp` 的新增功能调研结果。重点是后续迭代 `SausageRodEditorDemo` 暂停编辑器和运行时编辑能力时，哪些可以直接扩展，哪些需要补物理链路。
 
-## 总结
+## 结论总览
 
-当前仓库的 demo 是仿真 viewer，不是场景编辑器。按空格暂停后，现成能力不能完整达到运行时编辑物体的效果。
-
-| 目标 | 暂停状态下现成支持 | 结论 |
+| 需求 | 结论 | 主要缺口 |
 | --- | --- | --- |
-| 鼠标拖动物品 | 不满足编辑器式拖动 | 现有拖动只给选中动态刚体/粒子加速度或速度。暂停时仿真步进 return，不会积分位置，所以物体不会被实时拖到鼠标位置。 |
-| 缩放物品 | 不支持 | `scale` 是 JSON 加载时参数。GUI 里的 Scale 只缩放 ImGui 界面，不缩放场景物体。 |
-| 旋转物品 | 不支持 | Alt+左键旋转的是相机视图；物体旋转来自仿真角速度、碰撞或代码设置，没有旋转 gizmo。 |
-| 新增物品 | 不支持现成 UI | 源码能构造物体，但运行时新增需要同步模型数组、碰撞对象、约束、ID 映射和选择状态。 |
-| 删除物品 | 不支持单个删除 | 只有整体 `cleanup()`；单个删除会牵动刚体下标、碰撞对象、约束、接触缓存和选择列表。 |
+| `z/x/c` 分别绕 Z/X/Y 单方向旋转，并保持当前相对全局坐标系 | 可实现，改动小 | 当前只有 `z/x` 正反绕 Y；需要泛化为任意全局轴旋转 |
+| 删除数字快捷键调柔软度 | 可实现，改动小 | 移除 `0/1/5/9` 注册和提示文案；实现后同步 `OP.md` |
+| 新增对象沿自身正/左/上方向拉伸 | 盒体可较快实现；复杂 SDF 物体需重建 | 当前只有 box 均匀缩放；方向拉伸要按局部轴修改尺寸并平移中心 |
+| 可新增盒、球、锥体、弯滑轨、直/平滑轨 | 盒/球容易；弯滑轨和直轨可重构生成器；锥体需 SDF 或新碰撞类型 | 原碰撞 API 没有 cone 解析碰撞；滑轨是程序网格 + SDF |
+| 新增物体可选择固定/非固定，非固定受重力 | 可实现，但不是只改 `dynamic=true` | 当前 editor demo 没有推进 PBD 刚体求解，也没有把 `cd` 接到 `TimeStepController` |
+| 运行状态中让选中物体平移/旋转 | 可设计，建议区分“运动控制”和“直接编辑” | 当前编辑函数都要求暂停；运行中直接改 transform 会造成瞬移/速度问题 |
+| 香肠除柔软度外设置“粘度”，100% 完全粘住 | 不能直接靠原有参数完成；需新增粘附逻辑 | 现有主要是摩擦/回弹/接触约束；当前 rod 香肠不是 `ParticleData`，不能直接套用已有 particle joint |
 
-## 关键源码证据
+## 当前实现边界
 
-### 暂停逻辑
+- `SausageRodEditorDemo` 是局部手写 C++ demo，不是原仓库通用场景编辑器。
+- 当前香肠是自写 `RodPoint` 中心线模型，运动由 `rodSubStep()` 推进。
+- 当前障碍物是 `RigidBody` + `CubicSDFCollisionDetection` 碰撞对象，但主要作为香肠采样碰撞的静态障碍。
+- `DemoBase::step()` 只做导出，不会推进 PBD 刚体求解；当前 editor demo 的 `timeStep()` 调用 `base->step()`，没有调用 `Simulation::getCurrent()->getTimeStep()->step(*model)`。
+- `cd` 当前用于香肠自写碰撞查询，但源码中没有看到 `Simulation::getCurrent()->getTimeStep()->setCollisionDetection(*model, cd)`。
+- 因此，当前新增盒体虽然通过 `addBody(... dynamic=false ...)` 建成刚体，但它本质上仍是静态可编辑障碍；若直接把新增物体改成 `dynamic=true`，还不足以让它完整参与重力、刚体碰撞和接触求解。
 
-文件：`Demos/SceneLoaderDemo/SceneLoaderDemo.cpp`
+## 1. `z/x/c` 全局轴单方向旋转
 
-`timeStep()` 中：
+可实现。当前源码中：
 
-- 读取 `DemoBase::PAUSE`。
-- 若 pause 为 true，直接 `return`。
-- 因此暂停时不会调用 `Simulation::getCurrent()->getTimeStep()->step(*model)`。
-- 渲染和鼠标回调仍在窗口循环中，但物理积分不会推进。
+- `rotateSausageY(angle)` 只支持绕全局 Y 轴旋转香肠中心线。
+- `rotateSelectedEditorObjectY(angle)` 只支持绕全局 Y 轴旋转选中刚体。
+- `z` 和 `x` 现在分别绑定到 Y 轴负/正方向旋转。
 
-这意味着：暂停时即使鼠标回调改了速度，物体位置也不会因为仿真积分而变化。
+建议改法：
 
-### 现有鼠标选择和拖动
+1. 把 `rotateSausageY(angle)` 泛化为 `rotateSausageAroundAxis(axis, angle)`。
+2. 把 `rotateSelectedEditorObjectY(angle)` 泛化为 `rotateSelectedEditorObjectAroundGlobalAxis(axis, angle)`。
+3. 保持“相对全局坐标系”的做法：刚体四元数用 `qDelta * currentRotation`，不要改成 `currentRotation * qDelta`。
+4. 绑定：
+   - `z`: 绕全局 Z 轴单方向旋转。
+   - `x`: 绕全局 X 轴单方向旋转。
+   - `c`: 绕全局 Y 轴单方向旋转。
 
-文件：
+“单方向旋转”意味着每次按键只加同一个正角度，例如 `+10` 度。若以后需要反向旋转，建议用 UI 按钮或明确的反向模式；不要马上占用数字键。
 
-- `Demos/Visualization/MiniGL.cpp`
-- `Demos/Visualization/Selection.h`
-- `Demos/Common/DemoBase.cpp`
+## 2. 删除数字柔软度快捷键
 
-现有流程：
+可实现。当前 `main.cpp` 中注册了：
 
-1. `DemoBase::init()` 注册 `MiniGL::setSelectionFunc(selection, this)`。
-2. 鼠标左键无修饰键框选，松开时触发 `DemoBase::selection()`。
-3. 粒子选择通过 `Selection::selectRect()` 检查粒子位置。
-4. 刚体选择只检查刚体质心位置，不检查完整网格轮廓。
-5. 选中后设置 `MiniGL::setMouseMoveFunc(2, mouseMove)`。
-6. `DemoBase::mouseMove()` 反投影鼠标位置，得到 `diff`。
-7. 对动态刚体执行 `rb[i]->getVelocity() += 3.0 / h * diff`。
-8. 对动态粒子执行 `pd.getVelocity(i) += 5.0 * diff / h`。
+- `0`: softness 0%
+- `1`: softness 10%
+- `5`: softness 50%
+- `9`: softness 100%
 
-所以现有“拖动”是给速度一个增量，更像鼠标施力或推拽物体。它不是直接改 `position`，也不是暂停编辑中的 transform 操作。
+后续可直接删除这些 `MiniGL::addKeyFunc()` 注册，并删除启动提示里的 `0/1/5/9` 文案。`+/-` 是否保留可以单独决定：用户当前要求是删除“数字快捷键”，所以最小改动是只移除数字预设，把 `+/-` 继续留作柔软度细调。
 
-### 相机交互不是物体交互
+注意：`OP.md` 中已经记录 `1/2/3/4` 在 MiniGL 里也有视图旋转相关风险，因此释放数字键是正确方向。实现后需要同步更新 `OP.md` 和 `README.md` 的快捷键说明。
 
-文件：`Demos/Visualization/MiniGL.cpp`
+## 3. 沿对象自身正/左/上方向拉伸
 
-已有视图操作：
+盒体可实现，复杂物体要分层处理。
 
-- 左键 + Ctrl：沿视图 z 方向平移场景。
-- 左键 + Shift：沿 x/y 平移场景。
-- 左键 + Alt：旋转场景视图。
-- 滚轮默认改变 `movespeed`，影响相机/视图移动速度。
+当前缩放只有 `scaleSelectedEditorObject(factor)`，它做的是：
 
-这些都是相机或视图变换，不会改变物体本身。
+1. 修改 `EditableRigidBody::boxScale`。
+2. 用 cube 网格重新 `initBody()`。
+3. 调 `syncRigidBodyTransform()`。
+4. 更新 `DistanceFieldCollisionBox::m_box`。
 
-### GUI 功能边界
+局部方向拉伸建议定义为：
 
-文件：`Demos/Common/Simulator_GUI_imgui.cpp`
+| 方向 | 局部轴 | 世界方向计算 |
+| --- | --- | --- |
+| 正方向/front | local `+Z` | `R * (0,0,1)` |
+| 左方向/left | local `-X` | `R * (-1,0,0)` |
+| 上方向/up | local `+Y` | `R * (0,1,0)` |
 
-GUI 里有：
+若要求“从某一侧拉伸，而不是从中心同时放大”，需要在改变尺寸的同时移动中心：
 
-- 空格暂停/继续。
-- `r` reset。
-- `w` wireframe。
-- 时间步长、仿真参数、渲染参数。
-- GUI Scale 100% 到 200%。
+- 沿 local `+Z` 增加长度 `d`：`boxScale.z += d`，中心移动 `+0.5*d*(R*Z)`。
+- 沿 local `-X` 增加长度 `d`：`boxScale.x += d`，中心移动 `-0.5*d*(R*X)`。
+- 沿 local `+Y` 增加长度 `d`：`boxScale.y += d`，中心移动 `+0.5*d*(R*Y)`。
 
-GUI Scale 是界面缩放，不是物体缩放。没有发现新增物体、删除物体、物体平移/旋转/缩放的面板。
+限制：
 
-## 单项分析
+- 盒体：最适合先实现，视觉和 `DistanceFieldCollisionBox` 都能同步。
+- 球体：非均匀拉伸会变成椭球，但现有 `addCollisionSphere` 只能表示球；要么只允许等比缩放，要么改用 SDF/box 代理。
+- 锥体、滑轨、圆环等 SDF 物体：不能只改 mesh scale；应重建可视网格和 SDF，否则视觉与碰撞场会错位。
 
-### 鼠标拖动物品
+## 4. 新增物体类型
 
-现状：
+建议把 `addEditorBox()` 重构成通用对象工厂，例如 `addEditorObject(shapeKind, fixed)`，并扩展 `EditableRigidBody` 记录形状类型、局部尺寸、是否 SDF、是否动态、是否可删除。
 
-- 运行时可以框选动态刚体或粒子。
-- 继续运行时，中键拖动会给选中对象增加速度。
-- 暂停时回调仍可执行，但只改速度，不改位置；因为 `timeStep()` 暂停直接 return，所以不会看到物体被实时拖动。
+| 类型 | 可行性 | 实现路线 |
+| --- | --- | --- |
+| 盒体 | 已有 | 复用 `cube.obj`、`addCollisionBox()`、`boxScale` |
+| 球体 | 容易 | `bin/resources/models/sphere.obj` 已存在；新增 `addCollisionSphere()` helper |
+| 锥体 | 中等 | 原仓库没有 cone 解析碰撞；需程序生成 cone mesh 并用 `addCubicSDFCollisionObject()`，或新增 `DistanceFieldCollisionCone` |
+| 弯滑轨 | 可行但要重构 | 当前由 `makeCoursePath()` + `buildHalfPipeMesh()` + `generateMeshSDF()` 生成；抽成可复用 factory 后可新增副本 |
+| 直/平滑轨 | 可行 | 用直线路径复用半管网格生成器，或参考旧 `SausageCourseDemo` 的 plank/cylinder 简化轨道；若要光滑半管碰撞，仍建议 SDF |
 
-要达到“暂停后鼠标拖动物品”的效果，需要新增编辑模式：
+球体新增时还要补：
 
-1. 鼠标点击或框选得到目标物体。
-2. 将鼠标屏幕坐标反投影到拖动平面或射线命中点。
-3. 暂停时直接设置物体位置，而不是只改速度。
-4. 对刚体同步：
-   - `setPosition()`
-   - `setLastPosition()`
-   - `setOldPosition()`
-   - 需要时清零 `setVelocity()`
-   - `getGeometry().updateMeshTransformation(...)`
-   - 碰撞 AABB/BVH 状态
-5. 对粒子同步：
-   - 当前、上一帧、旧位置
-   - 速度清零或按拖动速度重设
-6. 松开鼠标后再恢复仿真。
+- `addCollisionSphere(body, radius)` helper。
+- `EditableRigidBody` 中保存 radius 或统一保存 `Vector3r scale`。
+- 删除时沿用“停用并移到远处”，避免 erase 刚体导致索引和碰撞对象引用失效。
 
-建议：暂停编辑时使用“直接设置 transform”的方式；运行中交互时才使用“施力/改速度”的方式。
+锥体新增时要注意：
 
-### 缩放物品
+- `bin/resources/models` 里目前有 `cube.obj`、`sphere.obj`、`cylinder.obj`、`torus.obj`，没有看到 cone 模型。
+- 若临时需要锥体，可程序生成 mesh；若希望准确碰撞，优先用 mesh SDF。
+- 若锥体会频繁缩放/拉伸，重建 SDF 的成本要纳入交互设计。
 
-现状：
+## 5. 固定/非固定新增物体
 
-- JSON 的 `scale`、`collisionObjectScale` 只在加载/构建模型时使用。
-- 没有运行时缩放 setter 或 UI。
+概念上可实现。当前 `addBody(..., dynamic, ...)` 已经有 `dynamic` 参数：
 
-缩放比平移更危险，因为它会影响：
+- `dynamic=false` 时会 `setMass(0)`，作为固定/静态刚体。
+- `dynamic=true` 时保留由密度和网格计算出的质量，理论上可被重力和接触约束影响。
 
-- 渲染网格局部坐标。
-- 刚体质量和惯性。
-- 碰撞体尺寸。
-- SDF 距离场。
-- 关节锚点和约束位置。
+但当前 editor demo 缺两条关键链路：
 
-建议实现方式：
+1. 需要调用 `Simulation::getCurrent()->getTimeStep()->setCollisionDetection(*model, cd)`，让 PBD 求解器使用当前碰撞对象。
+2. 需要在 `timeStep()` 中调用 `Simulation::getCurrent()->getTimeStep()->step(*model)`，否则动态刚体不会被 PBD 刚体积分推进。
 
-- 不建议只把现有 mesh 顶点乘一个比例。
-- 暂停编辑时，修改对象的 scene data scale，然后重建该对象或重建整个场景。
-- 如果是 SDF 碰撞，缩放后应同步 `collisionObjectScale`，必要时重新生成 SDF。
-- 如果物体带关节，需要根据缩放策略重新计算关节锚点。
+还要处理时间推进：
 
-最稳路线：缩放等价于“删除旧物体，以新 scale 创建新物体”。
+- 当前 `rodSubStep()` 自己调用 `TimeManager::setTime(time + timeStepSize)`。
+- `TimeStepController::step(*model)` 也会推进全局时间。
+- 如果两者都保留，会导致时间被推进两次。建议后续接入动态刚体时，让 `TimeStepController` 负责全局时间推进，去掉或改造 `rodSubStep()` 末尾的手动时间推进。
 
-### 旋转物品
+更细的物理边界：
 
-现状：
+- 动态新增物体与静态平台、盒体、SDF 障碍的刚体接触可走原 PBD 流程。
+- 香肠当前不是 `SimulationModel` 里的粒子/软体，香肠与新增动态物体的碰撞是自写 rod 采样逻辑。当前逻辑只修正香肠点的位置和速度，不会把反作用力推回动态刚体。
+- 因此如果目标是“香肠能把非固定盒子/球体撞飞”，还需要在 `collideSampleWithObjects()` 或接触后处理里把冲量/位置修正反作用到对应刚体，或者把香肠迁移回原仓库的粒子/四面体软体体系。
 
-- 物体可以因物理仿真而旋转，例如设置 `angularVelocity` 或碰撞产生角速度。
-- 现成鼠标旋转操作作用于视图，不作用于物体。
-- `RigidBody` 有 `setRotation()` 和 `rotationUpdated()`，但没有 UI 接线。
+## 6. 运行状态中控制选中物体移动/旋转
 
-暂停编辑时要旋转刚体，需要同步：
+可以设计，但建议区分两类行为。
 
-- 当前旋转、上一帧旋转、旧旋转。
-- 旋转矩阵、惯性世界矩阵、world-to-local 变换。
-- 可视 mesh 变换。
-- 碰撞对象状态。
+当前暂停编辑函数都以 `editorIsPaused()` 作为入口保护：
 
-建议实现：
+- `translateSelectedEditorObject()`
+- `rotateSelectedEditorObjectY()`
+- `scaleSelectedEditorObject()`
+- `addEditorBox()`
+- `deleteSelectedEditorObject()`
 
-1. 添加旋转 gizmo 或键盘快捷轴向旋转。
-2. 设置刚体 quaternion。
-3. 同步 last/old quaternion，避免恢复仿真后产生异常角速度。
-4. 调用 `rotationUpdated()`。
-5. 调用 `updateMeshTransformation()`。
-6. 更新碰撞 AABB/BVH。
+运行中控制建议：
 
-对布料和软体，旋转不是单个刚体 quaternion，而是要旋转一组粒子位置，因此应操作粒子集合并同步 old/last positions。
+| 模式 | 适用对象 | 行为 | 风险 |
+| --- | --- | --- | --- |
+| 运动控制模式 | 动态刚体 | 按键设置线速度/角速度，交给 PBD 积分 | 需要先接入 PBD 刚体 step；停止键或阻尼要设计清楚 |
+| 运动中 kinematic 编辑 | 固定/静态障碍 | 按键直接改 transform，并同步 old/last 状态 | 本质是移动障碍，可能把香肠或动态物体挤穿，需要限制步长 |
+| 暂停直接编辑 | 所有当前可编辑对象 | 沿用现有 transform 同步和清零速度 | 已有能力，最稳定 |
 
-### 新增物品
+若使用当前 `MiniGL::addKeyFunc()`，按键是离散触发；想要“按住持续运动”，需要增加 key state 记录或在 idle loop 中轮询 GLFW 按键状态。否则只能依赖键盘自动重复，手感会不稳定。
 
-现状：
+建议实现策略：
 
-- `SceneLoaderDemo::buildModel()` 在加载时一次性创建刚体、布料、软体、碰撞对象、关节和 ID 映射。
-- `SimulationModel` 有 `addTriangleModel()`、`addTetModel()`、`addLineModel()` 和多种 `add*Joint()`。
-- 刚体没有统一 public `addRigidBody()` 封装；现有 demo 常直接访问 `getRigidBodies()`，resize 后 `new RigidBody()`。
-- 新增碰撞体要调用 `addCollisionBox()`、`addCollisionSphere()`、`addCubicSDFCollisionObject()` 等。
+1. 保留暂停状态下的直接编辑。
+2. 运行状态下，同一批移动/旋转键进入“速度命令”分支。
+3. 对动态刚体设置 `velocity`/`angularVelocity`。
+4. 对静态障碍使用小步长 kinematic transform，并继续调用完整的 `syncRigidBodyTransform()`。
+5. 对香肠运行中控制要谨慎：当前 rod 是自写粒子链，运行时直接移动全部点会像瞬移；若要“带物理感”应施加目标速度或外力，而不是直接改位置。
 
-如果要暂停后新增物品，有两条路线。
+## 7. 香肠“粘度/粘住”能力
 
-路线 A：重建式，推荐
+不能直接用原仓库现有参数做到“100% 粘在其他物体上”。
 
-1. 暂停。
-2. 在 editor scene 或 `SceneData` 中添加一个 `RigidBodyData` / `TriangleModelData` / `TetModelData`。
-3. 清理当前 `SimulationModel` 和 `CollisionDetection`。
-4. 用修改后的 scene data 调用构建流程。
-5. 恢复选择状态和 GUI。
+当前可复用能力：
 
-优点：稳定，索引、SDF、约束、碰撞对象统一重建。缺点：不能保留所有物体的当前动态状态，除非额外做状态映射。
+- `RigidBody::setFrictionCoeff()` 和 `getFrictionCoeff()`。
+- `DistanceFieldCollisionDetection` 中接触双方摩擦系数大致按和组合。
+- 原仓库有 `RigidBodyContactConstraint`、`ParticleRigidBodyContactConstraint`、`RigidBodyParticleBallJoint` 等约束。
+- 当前 `SausageRodEditorDemo` 的 rod 接触会读取障碍刚体的 friction/restitution。
 
-路线 B：live add
+当前不足：
 
-需要新增统一函数，例如：
+- 源码中没有找到通用 `viscosity`、`adhesion` 或 `stickiness` 参数。
+- 当前 rod 的 `applyContactVelocities()` 只是把切向速度按摩擦阻尼，且阻尼上限是 `0.85`，高摩擦也不会变成完全粘住。
+- 原仓库的 `RigidBodyParticleBallJoint` 依赖 `SimulationModel::ParticleData`，而当前香肠点是 demo 内部 `vector<RodPoint>`，不能直接注册成这个 joint。
 
-- `addRigidBodyFromData(...)`
-- `addCollisionObjectForRigidBody(...)`
-- `addTriangleModelFromData(...)`
-- `addTetModelFromData(...)`
+建议把用户语义拆成两类参数：
 
-同时要更新：
+| 参数名 | 物理含义 | 是否能直接用现有功能 |
+| --- | --- | --- |
+| `friction` | 接触切向滑动阻尼/摩擦 | 可以，当前已有 |
+| `internalDamping` 或 `viscosity` | 香肠内部速度阻尼，让形变恢复更慢/更黏 | 需要在 rod 速度或约束求解中新增 |
+| `adhesion` 或 `stickiness` | 接触后粘附到其他物体，100% 时不再相对滑动 | 需要新增接触粘附约束 |
 
-- `SimulationModel` 的 vector。
-- 碰撞检测对象列表。
-- ID 到 index 的映射。
-- constraint groups。
-- GUI/选择状态。
+若目标是“100% 粘在其他物体上”，推荐新增 stickiness/adhesion，而不是只叫 viscosity。实现方向：
 
-### 删除物品
+1. 接触发生时，按粘度概率或阈值创建 sticky contact。
+2. 记录香肠 sample/rod point、目标刚体 bodyIndex、刚体局部接触点、接触法线和初始距离。
+3. 每个 rod 子步求解一个粘附约束，使香肠点保持在目标刚体的局部接触点附近。
+4. `stickiness=100%` 时不允许切向相对速度；`0%` 时只使用普通摩擦。
+5. 可选：设置断裂阈值，拉力过大时脱粘。
 
-现状：
+如果以后把香肠迁移成 `ParticleData` 或 TetModel，可以更直接复用原仓库的 particle-rigidbody contact/joint 体系；在当前 rod 实现中，更现实的是写一个小型 sticky contact 列表。
 
-- `SimulationModel::cleanup()` 会整体删除所有刚体、三角模型、四面体模型、线模型和约束。
-- `CollisionDetection::cleanup()` 会整体删除所有碰撞对象。
-- 没有发现安全删除单个刚体、单个碰撞对象、单个约束的 API。
+## 推荐实施顺序
 
-删除单个物体要处理：
+1. 清理快捷键：移除 `0/1/5/9` 柔软度预设；实现 `z/x/c` 全局轴单向旋转；同步 `OP.md`、`README.md`。
+2. 重构新增物体工厂：先支持 box/sphere，并把 fixed/dynamic 作为参数保存在编辑表。
+3. 先做盒体局部方向拉伸：正/左/上三方向，保证视觉和 box 碰撞一致。
+4. 接入 PBD 刚体 step：让非固定新增物体真正受重力；处理 TimeManager 只推进一次。
+5. 增加弯滑轨/直滑轨工厂：复用半管 mesh + SDF 生成逻辑，避免视觉和碰撞分离。
+6. 增加运行中运动控制：动态物体用速度/角速度，静态障碍用小步 kinematic transform。
+7. 单独设计粘附系统：先做 `stickiness`，再考虑是否需要内部 `viscosity`。
 
-- 刚体 vector 下标变化。
-- 碰撞对象 `bodyIndex`。
-- 关节、弹簧、马达、阻尼器中引用的 body index。
-- 接触约束缓存。
-- 选择列表。
-- Scene JSON 中的 id 映射。
+## 实现后必须同步的文档
 
-建议实现：
-
-- 暂停编辑器初版使用重建式删除：从 scene data 删除目标对象，然后整体重建。
-- 若以后需要 live delete，必须写 `removeRigidBody(index)` 及相关索引重映射逻辑。
-- 删除带关节物体时，应同时删除所有引用该物体的约束。
-
-## 推荐功能设计
-
-### 建议的编辑模式
-
-新增一个明确的 editor mode：
-
-- `Simulate`：原有仿真模式，鼠标可施力拖拽。
-- `EditPaused`：暂停编辑模式，鼠标直接改 transform。
-
-切换规则：
-
-1. 空格暂停进入可编辑状态。
-2. 用户选择对象。
-3. 工具栏或快捷键选择 Move / Rotate / Scale / Add / Delete。
-4. 编辑操作修改 scene data 和运行时对象。
-5. 用户恢复仿真时，清理速度或按操作差分生成速度。
-
-### 推荐优先级
-
-1. 选中对象信息面板：显示 rigid body index、scene id、position、rotation、scale、mass、dynamic。
-2. 暂停平移刚体：最容易实现。
-3. 暂停旋转刚体：需要 quaternion 和 mesh/collision 同步。
-4. 重建式新增/删除刚体：比 live 增删安全。
-5. 重建式缩放刚体：避免质量/惯性/SDF 不一致。
-6. 布料/软体粒子集合编辑：放后面，因为粒子状态同步和约束影响更复杂。
-
-### 推荐新增源码模块
-
-可以新增一个编辑控制层，避免把逻辑散在 `DemoBase` 和 `SceneLoaderDemo`：
-
-- `Demos/Common/SceneEditor.h/.cpp`
-- `Demos/Common/TransformGizmo.h/.cpp`
-- `Demos/Common/EditorSelection.h/.cpp`
-
-职责：
-
-- 选择对象。
-- 管理编辑模式。
-- 平移、旋转、缩放对象。
-- 新增/删除 scene data。
-- 调用重建流程。
-- 维护选中对象和 GUI 面板。
-
-### 最小可行实现
-
-第一版只支持刚体，流程如下：
-
-1. 空格暂停。
-2. 左键点击或框选刚体质心。
-3. ImGui 面板显示 position / rotation / scale。
-4. 修改 position 时立即 `setPosition()`，同步 old/last position，更新 mesh。
-5. 修改 rotation 时 `setRotation()`，同步 old/last rotation，调用 `rotationUpdated()`，更新 mesh。
-6. 修改 scale、新增、删除时走 scene data 重建。
-7. 恢复仿真前清零选中刚体速度和角速度，避免编辑产生爆炸。
-
-## 重要风险
-
-- 暂停编辑后恢复仿真，如果 old/last position 没同步，速度更新会突然变大。
-- 直接缩放网格但不重算质量/惯性，会导致物理行为错误。
-- 直接缩放 SDF 物体但不更新 `collisionObjectScale`，视觉和碰撞会错位。
-- 删除物体后不更新约束引用，会造成越界或错误约束。
-- 新增物体后不重建 collision detection，物体可能可见但不可碰撞。
-- 布料/软体不能按刚体 transform 简单处理，需要整体变换粒子位置。
+- `OP.md`：快捷键和鼠标操作发生变化时必须更新，尤其是数字键释放、`z/x/c` 语义变化、新增运行中控制键。
+- `README.md`：推荐 demo 的简要操作说明要同步。
+- `EXT.md`：功能状态从“调研/未实现”变为“已实现”后更新。
+- `REF.md`：只在新增了稳定的物理能力或仓库可复用实现后再写入；不要把临时设计草案放进 `REF.md`。
