@@ -1,8 +1,0 @@
-D:\master\vr\final2\PositionBasedDynamics\Demos\DistanceFieldDemos\RigidBodyCollisionDemo.cpp;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\DistanceFieldDemos\RigidBodyCollisionDemo.dir\Release\RigidBodyCollisionDemo.obj
-D:\master\vr\final2\PositionBasedDynamics\Demos\Common\LogWindow.cpp;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\DistanceFieldDemos\RigidBodyCollisionDemo.dir\Release\LogWindow.obj
-D:\master\vr\final2\PositionBasedDynamics\Demos\Common\Simulator_GUI_imgui.cpp;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\DistanceFieldDemos\RigidBodyCollisionDemo.dir\Release\Simulator_GUI_imgui.obj
-D:\master\vr\final2\PositionBasedDynamics\Demos\Common\imguiParameters.cpp;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\DistanceFieldDemos\RigidBodyCollisionDemo.dir\Release\imguiParameters.obj
-D:\master\vr\final2\PositionBasedDynamics\Demos\Common\DemoBase.cpp;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\DistanceFieldDemos\RigidBodyCollisionDemo.dir\Release\DemoBase.obj
-D:\master\vr\final2\PositionBasedDynamics\extern\glfw\deps\glad_gl.c;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\DistanceFieldDemos\RigidBodyCollisionDemo.dir\Release\glad_gl.obj
-D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\MiniGL.cpp;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\DistanceFieldDemos\RigidBodyCollisionDemo.dir\Release\MiniGL.obj
-D:\master\vr\final2\PositionBasedDynamics\Demos\Visualization\Shader.cpp;D:\master\vr\final2\PositionBasedDynamics\build-vs2\Demos\DistanceFieldDemos\RigidBodyCollisionDemo.dir\Release\Shader.obj

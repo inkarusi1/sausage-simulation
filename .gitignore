@@ -1,3 +1,22 @@
 lib/
 bin/
 !bin/*.bat
+# Build outputs
+build/
+build-*/
+build*/
+.vs/
+out/
+CMakeFiles/
+CMakeCache.txt
+
+# Visual Studio / C++ build artifacts
+*.obj
+*.ilk
+*.pdb
+*.idb
+*.exe
+*.dll
+*.lib
+*.exp
+*.log

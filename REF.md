@@ -254,6 +254,7 @@ SDF 碰撞由 `Simulation/CubicSDFCollisionDetection.cpp` 和 `Simulation/Distan
 - 固定粒子通常设置为角点，例如 `[0,49]`，用于形成悬挂布料。
 - 场景中有静态地面、动态球体、动态圆柱和动态圆环。
 - 圆柱设置了初始 `angularVelocity: [1,0,0]`，可观察旋转刚体对布料接触的影响。
+- 该场景的地面摩擦为 `0.0`，动态球/圆柱/圆环摩擦通常为 `0.2`、回弹为 `0.6`；也就是说，原仓库示例不会靠很大的摩擦来产生翻转，而是主要靠接触冲量、偏心接触点、惯性张量和角速度积分。
 
 适合参考：
 
@@ -737,6 +738,52 @@ SDF 碰撞由 `Simulation/CubicSDFCollisionDetection.cpp` 和 `Simulation/Distan
 
 - 这是自定义近似响应，不等价于原仓库速度约束阶段的完整接触冲量求解。
 - 如果需要多刚体堆叠、角速度和力矩的严格效果，仍应优先使用原生刚体模型和 `TimeStepController`。
+
+### 课程 demo 轻量动态物体的翻转/角速度补充
+
+文件：
+
+- 原仓库依据：`PositionBasedDynamics/PositionBasedRigidBodyDynamics.cpp`
+- 原仓库旋转积分：`PositionBasedDynamics/TimeIntegration.cpp`
+- 原仓库约束包装：`Simulation/Constraints.cpp`
+- 课程落地位置：`Demos/SausageRodEditorDemo/main.cpp`
+
+原仓库刚体接触不是只改中心速度。`RigidBodyContactConstraint` 和 `ParticleRigidBodyContactConstraint` 会把接触点相对质心的偏移记为 `r = contactPoint - centerOfMass`，接触点速度使用：
+
+```cpp
+u = v + omega.cross(r);
+```
+
+速度约束求解出冲量 `p` 后，线速度和角速度分别按下面方式修正：
+
+```cpp
+v += invMass * p;
+omega += inertiaInverseW * r.cross(p);
+```
+
+这就是刚体被偏心撞击后会翻转/滚动的核心：接触点离质心越远，`r.cross(p)` 产生的角动量越明显。随后 `TimeIntegration::semiImplicitEulerRotation()` 用角速度积分四元数：
+
+```cpp
+rotation += h * 0.5 * (angularVelocityQuaternion * rotation);
+rotation.normalize();
+```
+
+`SausageRodEditorDemo` 当前没有完整接入 `TimeStepController` 的原生刚体 step，所以编辑器新增动态物体使用轻量实现：仍由 demo 自己积分位置和重力，但碰撞时按上面的原仓库思路在接触采样点施加冲量，并同步更新 `EditableRigidBody::angularVelocity`。盒体使用角点/面中心采样，锥体和滑轨使用网格顶点抽样；因此盒体角点撞平台、圆环或滑轨边缘时会获得角速度，而不是只平移弹开。
+
+实现注意：
+
+- fixed 切 dynamic 时不能只把质量从 0 改成非 0；还要给物体设置与当前尺寸匹配的惯性张量，并刷新 `updateInertiaW()`。否则会出现“质量变轻但惯性仍像高密度物体”的状态，翻转会非常迟钝。
+- 每次直接改 transform 或自己积分旋转后，都要同步 `rotationMatrix`、`updateInertiaW()`、`updateInverseTransformation()` 和渲染网格变换；否则碰撞查询、惯性方向和视觉朝向会逐渐不同步。
+- 参考 `ClothCollisionScene`，演示级动态物体的摩擦不宜过大。摩擦过高会吃掉切向速度，让物体像被地面或障碍物拖住；自然翻滚主要来自偏心法向冲量，不应主要靠摩擦硬拽。
+- 尖锐 SDF（例如数学尖锥）容易在粒子/杆采样接触中产生法线突变，使香肠被尖点挂住。课程 demo 中锥体应使用轻微平顶/圆钝化的程序网格，并降低该类编辑器 SDF 物体对香肠的摩擦。
+- `CubicSDFCollisionDetection::CubicSDFCollisionObject` 自带 `m_scale`，距离查询时会把局部点除以该 scale，再把距离乘回 scale。因此对 SDF 物体做统一缩放时，可以同步缩放可视局部网格和 `m_scale`，不必每次重新生成距离场。非均匀缩放仍建议重建网格和 SDF。
+- 编辑器状态保存不等同于上游 `SceneLoaderDemo` JSON。`SausageRodEditorDemo` 使用独立的轻量 JSON 保存当前香肠、可编辑刚体 transform、形状类型、缩放、fixed/dynamic、速度和角速度，加载时先重建课程基础场景，再按记录复原编辑状态。
+
+限制：
+
+- 这是课程 demo 内的近似刚体响应，不等价于原仓库完整刚体接触约束和多轮速度迭代。
+- 多动态物体互碰仍是轻量级分离和速度响应，不适合替代稳定堆叠场景。
+- 如果目标是严格的翻滚、堆叠、角动量守恒和多体接触，应继续接入 `Simulation::getCurrent()->getTimeStep()->step(*model)` 与 `setCollisionDetection(*model, cd)`，并处理 `rodSubStep()` 与 `TimeManager` 的时间推进统一。
 
 ### 墙钟时间节流
 

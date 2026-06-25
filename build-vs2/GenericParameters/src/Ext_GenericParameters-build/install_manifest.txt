@@ -1,6 +1,0 @@
-D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/include/EnumParameter.h
-D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/include/FunctionParameter.h
-D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/include/NumericParameter.h
-D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/include/Parameter.h
-D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/include/ParameterObject.h
-D:/master/vr/final2/PositionBasedDynamics/build-vs2/GenericParameters/include/VectorParameter.h

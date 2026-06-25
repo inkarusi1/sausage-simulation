@@ -55,6 +55,16 @@ namespace
 		SdfMesh
 	};
 
+	enum class EditorAddKind
+	{
+		Box,
+		Sphere,
+		Cone,
+		Ring,
+		CurvedSlide,
+		StraightSlide
+	};
+
 	struct EditableRigidBody
 	{
 		unsigned int bodyIndex = 0u;
@@ -62,7 +72,9 @@ namespace
 		Vector3r boxScale = Vector3r::Ones();
 		Real sphereRadius = static_cast<Real>(0.5);
 		Real boundingRadius = static_cast<Real>(0.5);
+		Real uniformScale = static_cast<Real>(1.0);
 		std::string name;
+		EditorAddKind sourceKind = EditorAddKind::Cone;
 		bool active = true;
 		bool dynamic = false;
 		bool scalableBox = false;
@@ -98,8 +110,8 @@ namespace
 	const unsigned int ringTubeSegments = 12u;
 
 	const Real pi = static_cast<Real>(3.14159265358979323846);
-	const Real sausageLength = static_cast<Real>(2.75);
-	const Real sausageRadius = static_cast<Real>(0.205);
+	Real sausageLength = static_cast<Real>(2.75);
+	Real sausageRadius = static_cast<Real>(0.205);
 	const Real sausageMassPerPoint = static_cast<Real>(0.11);
 	const Real timeStepSize = static_cast<Real>(0.006);
 	const Real playbackSpeed = static_cast<Real>(1.0);
@@ -110,9 +122,10 @@ namespace
 	const Real slidePipeWallThickness = static_cast<Real>(0.16);
 	const Real ringMajorRadius = static_cast<Real>(0.70);
 	const Real ringTubeRadius = static_cast<Real>(0.105);
+	const Real editorRingTubeRadius = static_cast<Real>(0.18);
 
 	Real softness = static_cast<Real>(10.0);
-	bool newEditorObjectsDynamic = false;
+	EditorAddKind currentEditorAddKind = EditorAddKind::Box;
 
 	float sausageColor[4] = { 0.82f, 0.035f, 0.02f, 1.0f };
 	float sausageTipColor[4] = { 0.98f, 0.08f, 0.035f, 1.0f };
@@ -349,6 +362,33 @@ namespace
 		return "none";
 	}
 
+	std::string editorAddKindName(const EditorAddKind kind)
+	{
+		switch (kind)
+		{
+		case EditorAddKind::Box:
+			return "box";
+		case EditorAddKind::Sphere:
+			return "sphere";
+		case EditorAddKind::Cone:
+			return "cone";
+		case EditorAddKind::Ring:
+			return "ring";
+		case EditorAddKind::CurvedSlide:
+			return "curved half-pipe slide";
+		case EditorAddKind::StraightSlide:
+			return "straight half-pipe slide";
+		default:
+			return "object";
+		}
+	}
+
+	void setEditorAddKind(const EditorAddKind kind)
+	{
+		currentEditorAddKind = kind;
+		std::cout << "Editor add shape: " << editorAddKindName(kind) << "\n";
+	}
+
 	void selectEditorObject(const int objectIndex, const bool printStatus = true)
 	{
 		const int maxObject = static_cast<int>(editableRigidBodies.size());
@@ -395,6 +435,7 @@ namespace
 		const bool removable,
 		const Real restitution,
 		const Real friction,
+		const EditorAddKind sourceKind,
 		const bool dynamic = false,
 		const Real boundingRadius = static_cast<Real>(0.5))
 	{
@@ -409,6 +450,7 @@ namespace
 		e.removable = removable;
 		e.restitution = restitution;
 		e.friction = friction;
+		e.sourceKind = sourceKind;
 		e.dynamic = dynamic;
 		editableRigidBodies.push_back(e);
 	}
@@ -438,8 +480,50 @@ namespace
 			body->setAngularVelocity0(Vector3r::Zero());
 		}
 		body->setRotationMatrix(rotation.toRotationMatrix());
+		if (body->getMass() != static_cast<Real>(0.0))
+			body->updateInertiaW();
 		body->updateInverseTransformation();
 		body->getGeometry().updateMeshTransformation(body->getPosition(), body->getRotationMatrix());
+	}
+
+	void configureEditorDynamicMassProperties(const EditableRigidBody &entry, RigidBody *body)
+	{
+		if (body == nullptr)
+			return;
+
+		Real mass = static_cast<Real>(1.0);
+		Vector3r inertia = Vector3r::Ones();
+		if (entry.shapeKind == EditorShapeKind::Box)
+		{
+			const Vector3r s = entry.boxScale.cwiseMax(Vector3r(0.10, 0.10, 0.10));
+			mass = static_cast<Real>(1.0);
+			inertia = (mass / static_cast<Real>(12.0)) *
+				Vector3r(s.y() * s.y() + s.z() * s.z(),
+					s.x() * s.x() + s.z() * s.z(),
+					s.x() * s.x() + s.y() * s.y());
+		}
+		else if (entry.shapeKind == EditorShapeKind::Sphere)
+		{
+			const Real r = std::max(entry.sphereRadius, static_cast<Real>(0.10));
+			mass = static_cast<Real>(1.0);
+			inertia = Vector3r::Constant(static_cast<Real>(0.4) * mass * r * r);
+		}
+		else
+		{
+			const Real r = std::max(entry.boxScale.x(), static_cast<Real>(0.25));
+			const Real h = std::max(entry.boxScale.y(), static_cast<Real>(0.50));
+			mass = entry.boundingRadius > static_cast<Real>(1.0) ? static_cast<Real>(3.0) : static_cast<Real>(1.2);
+			inertia = Vector3r(
+				static_cast<Real>(0.15) * mass * (r * r + h * h),
+				static_cast<Real>(0.30) * mass * r * r,
+				static_cast<Real>(0.15) * mass * (r * r + h * h));
+		}
+
+		inertia = inertia.cwiseMax(Vector3r(static_cast<Real>(0.02), static_cast<Real>(0.02), static_cast<Real>(0.02)));
+		body->setMass(mass);
+		body->setInertiaTensor(inertia);
+		body->updateInertiaW();
+		body->updateInverseTransformation();
 	}
 
 	void translateSausage(const Vector3r &delta)
@@ -493,6 +577,18 @@ namespace
 		return nullptr;
 	}
 
+	CubicSDFCollisionDetection::CubicSDFCollisionObject *findCubicSDFCollisionObject(const unsigned int bodyIndex)
+	{
+		for (CollisionDetection::CollisionObject *co : cd->getCollisionObjects())
+		{
+			if (co->m_bodyIndex != bodyIndex)
+				continue;
+			if (co->getTypeId() == CubicSDFCollisionDetection::CubicSDFCollisionObject::TYPE_ID)
+				return static_cast<CubicSDFCollisionDetection::CubicSDFCollisionObject *>(co);
+		}
+		return nullptr;
+	}
+
 	void rebuildBoxRigidBody(const unsigned int rigidEditorIndex)
 	{
 		if (rigidEditorIndex >= editableRigidBodies.size())
@@ -515,6 +611,8 @@ namespace
 		body->initBody(static_cast<Real>(500.0), position, rotation, vd, mesh, entry.boxScale);
 		if (!entry.dynamic)
 			body->setMass(static_cast<Real>(0.0));
+		else
+			configureEditorDynamicMassProperties(entry, body);
 		body->setRestitutionCoeff(entry.restitution);
 		body->setFrictionCoeff(entry.friction);
 		syncRigidBodyTransform(entry.bodyIndex, position, rotation);
@@ -547,6 +645,8 @@ namespace
 		body->initBody(static_cast<Real>(500.0), position, rotation, vd, mesh, scale);
 		if (!entry.dynamic)
 			body->setMass(static_cast<Real>(0.0));
+		else
+			configureEditorDynamicMassProperties(entry, body);
 		body->setRestitutionCoeff(entry.restitution);
 		body->setFrictionCoeff(entry.friction);
 		syncRigidBodyTransform(entry.bodyIndex, position, rotation);
@@ -554,6 +654,54 @@ namespace
 		DistanceFieldCollisionDetection::DistanceFieldCollisionSphere *sphere = findSphereCollisionObject(entry.bodyIndex);
 		if (sphere != nullptr)
 			sphere->m_radius = entry.sphereRadius;
+	}
+
+	void scaleSDFRigidBody(const unsigned int rigidEditorIndex, const Real factor)
+	{
+		if (rigidEditorIndex >= editableRigidBodies.size())
+			return;
+		EditableRigidBody &entry = editableRigidBodies[rigidEditorIndex];
+		if (!entry.active || entry.shapeKind != EditorShapeKind::SdfMesh)
+			return;
+
+		SimulationModel::RigidBodyVector &rb = Simulation::getCurrent()->getModel()->getRigidBodies();
+		if (entry.bodyIndex >= rb.size())
+			return;
+
+		RigidBody *body = rb[entry.bodyIndex];
+		VertexData &localVertices = body->getGeometry().getVertexDataLocal();
+		for (unsigned int i = 0u; i < localVertices.size(); i++)
+			localVertices.getPosition(i) *= factor;
+
+		entry.uniformScale = clampReal(entry.uniformScale * factor, static_cast<Real>(0.05), static_cast<Real>(12.0));
+		entry.boundingRadius *= factor;
+		if (entry.sourceKind == EditorAddKind::Cone)
+			entry.boxScale *= factor;
+
+		CubicSDFCollisionDetection::CubicSDFCollisionObject *sdf = findCubicSDFCollisionObject(entry.bodyIndex);
+		if (sdf != nullptr)
+			sdf->m_scale *= factor;
+
+		if (entry.dynamic)
+			configureEditorDynamicMassProperties(entry, body);
+		syncRigidBodyTransform(entry.bodyIndex, body->getPosition(), body->getRotation(), false);
+	}
+
+	void scaleSausage(const Real factor)
+	{
+		const Real actualFactor = clampReal(factor, static_cast<Real>(0.75), static_cast<Real>(1.35));
+		const Vector3r c = sausageCenter();
+		sausageLength = clampReal(sausageLength * actualFactor, static_cast<Real>(0.6), static_cast<Real>(7.0));
+		sausageRadius = clampReal(sausageRadius * actualFactor, static_cast<Real>(0.06), static_cast<Real>(0.65));
+		for (unsigned int i = 0u; i < rod.size(); i++)
+		{
+			rod[i].x = c + actualFactor * (rod[i].x - c);
+			rod[i].oldX = rod[i].x;
+			rod[i].v.setZero();
+			rod[i].predictedV.setZero();
+			if (i < restLocal.size())
+				restLocal[i] *= actualFactor;
+		}
 	}
 
 	void translateSelectedEditorObject(const Vector3r &delta)
@@ -610,8 +758,13 @@ namespace
 
 	void scaleSelectedEditorObject(const Real factor)
 	{
-		if (!editorIsPaused() || selectedEditorObject <= 0)
+		if (!editorIsPaused())
 			return;
+		if (selectedEditorObject == 0)
+		{
+			scaleSausage(factor);
+			return;
+		}
 		const int rigidIndex = selectedEditorObject - 1;
 		if (rigidIndex < 0 || rigidIndex >= static_cast<int>(editableRigidBodies.size()) ||
 			!editableRigidBodies[rigidIndex].active)
@@ -627,7 +780,10 @@ namespace
 		}
 		if (!entry.scalableBox)
 		{
-			std::cout << "Scale skipped: " << entry.name << " is SDF mesh based; move/rotate it or rebuild the scene.\n";
+			if (entry.shapeKind == EditorShapeKind::SdfMesh)
+				scaleSDFRigidBody(static_cast<unsigned int>(rigidIndex), factor);
+			else
+				std::cout << "Scale skipped: unsupported object type.\n";
 			return;
 		}
 		entry.boxScale = (entry.boxScale * factor).cwiseMax(Vector3r(0.10, 0.10, 0.10)).cwiseMin(Vector3r(24.0, 8.0, 24.0));
@@ -683,12 +839,12 @@ namespace
 		loadBoxMesh(vd, mesh);
 
 		const Vector3r scale(0.65, 0.65, 0.65);
-		const bool dynamic = newEditorObjectsDynamic;
+		const bool dynamic = false;
 		const unsigned int body = addBody(vd, mesh, static_cast<Real>(500.0), position,
-			Quaternionr::Identity(), scale, dynamic, static_cast<Real>(0.18), static_cast<Real>(0.18));
+			Quaternionr::Identity(), scale, dynamic, static_cast<Real>(0.32), static_cast<Real>(0.04));
 		addCollisionBox(body, scale);
-		registerEditableRigidBody(body, dynamic ? "dynamic box" : "added box", EditorShapeKind::Box, scale, static_cast<Real>(0.0),
-			true, true, static_cast<Real>(0.18), static_cast<Real>(0.18), dynamic, static_cast<Real>(0.5) * scale.norm());
+		registerEditableRigidBody(body, "added box", EditorShapeKind::Box, scale, static_cast<Real>(0.0),
+			true, true, static_cast<Real>(0.32), static_cast<Real>(0.04), EditorAddKind::Box, dynamic, static_cast<Real>(0.5) * scale.norm());
 		return body;
 	}
 
@@ -700,21 +856,50 @@ namespace
 
 		const Real radius = static_cast<Real>(0.45);
 		const Vector3r scale = Vector3r::Constant(radius);
-		const bool dynamic = newEditorObjectsDynamic;
+		const bool dynamic = false;
 		const unsigned int body = addBody(vd, mesh, static_cast<Real>(500.0), position,
-			Quaternionr::Identity(), scale, dynamic, static_cast<Real>(0.15), static_cast<Real>(0.12));
+			Quaternionr::Identity(), scale, dynamic, static_cast<Real>(0.30), static_cast<Real>(0.03));
 		addCollisionSphere(body, radius);
-		registerEditableRigidBody(body, dynamic ? "dynamic sphere" : "added sphere", EditorShapeKind::Sphere, scale, radius,
-			false, true, static_cast<Real>(0.15), static_cast<Real>(0.12), dynamic, radius);
+		registerEditableRigidBody(body, "added sphere", EditorShapeKind::Sphere, scale, radius,
+			false, true, static_cast<Real>(0.30), static_cast<Real>(0.03), EditorAddKind::Sphere, dynamic, radius);
 		return body;
 	}
 
-	void toggleNewEditorObjectDynamics()
+	void toggleSelectedEditorObjectDynamics()
 	{
-		if (!editorIsPaused())
+		if (!editorIsPaused() || selectedEditorObject <= 0)
 			return;
-		newEditorObjectsDynamic = !newEditorObjectsDynamic;
-		std::cout << "New editor objects: " << (newEditorObjectsDynamic ? "dynamic" : "fixed") << "\n";
+		const int rigidIndex = selectedEditorObject - 1;
+		if (rigidIndex < 0 || rigidIndex >= static_cast<int>(editableRigidBodies.size()))
+			return;
+		EditableRigidBody &entry = editableRigidBodies[rigidIndex];
+		if (!entry.active || !entry.removable)
+		{
+			std::cout << "Dynamic toggle skipped: only editor-added objects can be switched in this demo.\n";
+			return;
+		}
+
+		SimulationModel::RigidBodyVector &rb = Simulation::getCurrent()->getModel()->getRigidBodies();
+		if (entry.bodyIndex >= rb.size())
+			return;
+
+		entry.dynamic = !entry.dynamic;
+		RigidBody *body = rb[entry.bodyIndex];
+		if (entry.dynamic)
+		{
+			configureEditorDynamicMassProperties(entry, body);
+		}
+		else
+		{
+			entry.velocity.setZero();
+			entry.angularVelocity.setZero();
+			body->setMass(static_cast<Real>(0.0));
+			body->setVelocity(Vector3r::Zero());
+			body->setVelocity0(Vector3r::Zero());
+			body->setAngularVelocity(Vector3r::Zero());
+			body->setAngularVelocity0(Vector3r::Zero());
+		}
+		std::cout << entry.name << " is now " << (entry.dynamic ? "dynamic" : "fixed") << ".\n";
 	}
 
 	void addEditorBox()
@@ -723,7 +908,7 @@ namespace
 			return;
 		addEditorBoxAt(sausageCenter() + Vector3r(1.0, 0.4, 0.0));
 		selectEditorObject(static_cast<int>(editableRigidBodies.size()));
-		std::cout << "Editor added a " << (newEditorObjectsDynamic ? "dynamic" : "fixed") << " box.\n";
+		std::cout << "Editor added a fixed box.\n";
 	}
 
 	void addEditorSphere()
@@ -732,7 +917,7 @@ namespace
 			return;
 		addEditorSphereAt(sausageCenter() + Vector3r(1.0, 0.9, 0.0));
 		selectEditorObject(static_cast<int>(editableRigidBodies.size()));
-		std::cout << "Editor added a " << (newEditorObjectsDynamic ? "dynamic" : "fixed") << " sphere.\n";
+		std::cout << "Editor added a fixed sphere.\n";
 	}
 
 	void deleteSelectedEditorObject()
@@ -756,9 +941,11 @@ namespace
 		std::cout << "Editor deleted the added object.\n";
 	}
 
-	void buildHalfPipeMesh(VertexData &vd, IndexedFaceMesh &mesh)
+	void buildHalfPipeMeshFromPath(const vector<Vector3r> &path, VertexData &vd, IndexedFaceMesh &mesh)
 	{
-		const unsigned int pathCount = static_cast<unsigned int>(slideCenter.size());
+		const unsigned int pathCount = static_cast<unsigned int>(path.size());
+		if (pathCount < 2u)
+			return;
 		const unsigned int ringCount = slidePipeArcSegments + 1u;
 		const unsigned int vertexCount = pathCount * ringCount * 2u;
 		const unsigned int surfaceFaces = (pathCount - 1u) * slidePipeArcSegments * 4u;
@@ -773,11 +960,11 @@ namespace
 		{
 			Vector3r tangent;
 			if (i == 0u)
-				tangent = slideCenter[1] - slideCenter[0];
+				tangent = path[1] - path[0];
 			else if (i + 1u == pathCount)
-				tangent = slideCenter[i] - slideCenter[i - 1u];
+				tangent = path[i] - path[i - 1u];
 			else
-				tangent = slideCenter[i + 1u] - slideCenter[i - 1u];
+				tangent = path[i + 1u] - path[i - 1u];
 			tangent = normalizedOr(tangent, Vector3r(1.0, 0.0, 0.0));
 
 			Vector3r side = Vector3r(0.0, 0.0, 1.0);
@@ -790,7 +977,7 @@ namespace
 			{
 				const Real theta = -static_cast<Real>(0.5) * pi + pi * static_cast<Real>(j) / static_cast<Real>(slidePipeArcSegments);
 				const Vector3r radial = std::sin(theta) * side - std::cos(theta) * up;
-				const Vector3r inner = slideCenter[i] + slidePipeRadius * (up + radial);
+				const Vector3r inner = path[i] + slidePipeRadius * (up + radial);
 				vd.addVertex(inner);
 				vd.addVertex(inner + slidePipeWallThickness * radial);
 			}
@@ -863,6 +1050,11 @@ namespace
 		mesh.updateVertexNormals(vd);
 	}
 
+	void buildHalfPipeMesh(VertexData &vd, IndexedFaceMesh &mesh)
+	{
+		buildHalfPipeMeshFromPath(slideCenter, vd, mesh);
+	}
+
 	void buildTorusMesh(VertexData &vd, IndexedFaceMesh &mesh, const Real majorRadius, const Real tubeRadius)
 	{
 		const unsigned int vertexCount = ringMajorSegments * ringTubeSegments;
@@ -911,31 +1103,42 @@ namespace
 	void buildConeMesh(VertexData &vd, IndexedFaceMesh &mesh, const Real radius, const Real height)
 	{
 		const unsigned int coneSegments = 32u;
-		const unsigned int vertexCount = coneSegments + 2u;
-		const unsigned int faceCount = coneSegments * 2u;
+		const unsigned int vertexCount = 2u * coneSegments + 2u;
+		const unsigned int faceCount = coneSegments * 4u;
 		vd.reserve(vertexCount);
 		mesh.initMesh(vertexCount, faceCount * 3u, faceCount);
 		mesh.setFlatShading(false);
 
-		const unsigned int tipIndex = 0u;
+		const unsigned int topCenterIndex = 0u;
 		const unsigned int baseCenterIndex = 1u;
 		const Real halfHeight = static_cast<Real>(0.5) * height;
+		const Real tipRadius = static_cast<Real>(0.08) * radius;
 		vd.addVertex(Vector3r(0.0, halfHeight, 0.0));
 		vd.addVertex(Vector3r(0.0, -halfHeight, 0.0));
 
 		for (unsigned int i = 0u; i < coneSegments; i++)
 		{
 			const Real angle = static_cast<Real>(2.0) * pi * static_cast<Real>(i) / static_cast<Real>(coneSegments);
+			vd.addVertex(Vector3r(tipRadius * std::cos(angle), halfHeight, tipRadius * std::sin(angle)));
+		}
+		for (unsigned int i = 0u; i < coneSegments; i++)
+		{
+			const Real angle = static_cast<Real>(2.0) * pi * static_cast<Real>(i) / static_cast<Real>(coneSegments);
 			vd.addVertex(Vector3r(radius * std::cos(angle), -halfHeight, radius * std::sin(angle)));
 		}
 
-		const auto ringIndex = [](const unsigned int i) { return 2u + i; };
+		const auto topIndex = [](const unsigned int i) { return 2u + i; };
+		const auto baseIndex = [coneSegments](const unsigned int i) { return 2u + coneSegments + i; };
 		for (unsigned int i = 0u; i < coneSegments; i++)
 		{
-			const unsigned int a = ringIndex(i);
-			const unsigned int b = ringIndex((i + 1u) % coneSegments);
-			addTriangle(mesh, tipIndex, a, b);
-			addTriangle(mesh, baseCenterIndex, b, a);
+			const unsigned int t0 = topIndex(i);
+			const unsigned int t1 = topIndex((i + 1u) % coneSegments);
+			const unsigned int b0 = baseIndex(i);
+			const unsigned int b1 = baseIndex((i + 1u) % coneSegments);
+			addTriangle(mesh, t0, b0, b1);
+			addTriangle(mesh, t0, b1, t1);
+			addTriangle(mesh, topCenterIndex, t1, t0);
+			addTriangle(mesh, baseCenterIndex, b0, b1);
 		}
 
 		mesh.buildNeighbors();
@@ -1002,6 +1205,113 @@ namespace
 		return ring;
 	}
 
+	unsigned int addEditorRingAt(const Vector3r &position)
+	{
+		VertexData vd;
+		IndexedFaceMesh mesh;
+		buildTorusMesh(vd, mesh, ringMajorRadius, editorRingTubeRadius);
+		const unsigned int body = addBody(vd, mesh, static_cast<Real>(500.0), position,
+			Quaternionr::Identity(), Vector3r::Ones(), false, static_cast<Real>(0.18), static_cast<Real>(0.02));
+		CubicSDFCollisionDetection::GridPtr ringSDF = generateMeshSDF(vd, mesh,
+			std::array<unsigned int, 3>({ 76u, 36u, 76u }), "editor thick torus ring");
+		addMeshSDFCollisionObject(body, ringSDF);
+		registerEditableRigidBody(body, "added ring", EditorShapeKind::SdfMesh,
+			Vector3r::Ones(), static_cast<Real>(0.0), false, true,
+			static_cast<Real>(0.18), static_cast<Real>(0.02), EditorAddKind::Ring,
+			false, ringMajorRadius + editorRingTubeRadius);
+		return body;
+	}
+
+	void addEditorRing()
+	{
+		if (!editorIsPaused())
+			return;
+		addEditorRingAt(sausageCenter() + Vector3r(1.2, 1.25, 0.0));
+		selectEditorObject(static_cast<int>(editableRigidBodies.size()));
+		std::cout << "Editor added a fixed thick ring.\n";
+	}
+
+	Vector3r pathBoundsCenter(const vector<Vector3r> &path)
+	{
+		if (path.empty())
+			return Vector3r::Zero();
+		Vector3r minP = path.front();
+		Vector3r maxP = path.front();
+		for (const Vector3r &p : path)
+		{
+			minP = minP.cwiseMin(p);
+			maxP = maxP.cwiseMax(p);
+		}
+		return static_cast<Real>(0.5) * (minP + maxP);
+	}
+
+	vector<Vector3r> makeCenteredCurvedSlidePath()
+	{
+		vector<Vector3r> path = slideCenter;
+		const Vector3r center = pathBoundsCenter(path);
+		for (Vector3r &p : path)
+			p -= center;
+		return path;
+	}
+
+	vector<Vector3r> makeStraightSlidePath()
+	{
+		vector<Vector3r> path;
+		const unsigned int samples = 18u;
+		for (unsigned int i = 0u; i < samples; i++)
+		{
+			const Real t = static_cast<Real>(i) / static_cast<Real>(samples - 1u);
+			path.push_back(Vector3r(static_cast<Real>(-2.2) + static_cast<Real>(4.4) * t, 0.0, 0.0));
+		}
+		return path;
+	}
+
+	Real meshBoundingRadius(const VertexData &vd)
+	{
+		Real radius = static_cast<Real>(0.0);
+		for (unsigned int i = 0u; i < vd.size(); i++)
+			radius = std::max(radius, vd.getPosition(i).norm());
+		return radius;
+	}
+
+	unsigned int addEditorHalfPipeSlideAt(const Vector3r &position, const bool curved)
+	{
+		VertexData vd;
+		IndexedFaceMesh mesh;
+		const vector<Vector3r> path = curved ? makeCenteredCurvedSlidePath() : makeStraightSlidePath();
+		buildHalfPipeMeshFromPath(path, vd, mesh);
+		const unsigned int body = addBody(vd, mesh, static_cast<Real>(500.0), position,
+			Quaternionr::Identity(), Vector3r::Ones(), false, static_cast<Real>(0.03), static_cast<Real>(0.0));
+		CubicSDFCollisionDetection::GridPtr slideSDF = generateMeshSDF(vd, mesh,
+			curved ? std::array<unsigned int, 3>({ 96u, 40u, 40u }) : std::array<unsigned int, 3>({ 88u, 36u, 36u }),
+			curved ? "editor curved half-pipe slide" : "editor straight half-pipe slide");
+		addMeshSDFCollisionObject(body, slideSDF);
+		registerEditableRigidBody(body, curved ? "added curved slide" : "added straight slide", EditorShapeKind::SdfMesh,
+			Vector3r::Ones(), static_cast<Real>(0.0), false, true,
+			static_cast<Real>(0.03), static_cast<Real>(0.0),
+			curved ? EditorAddKind::CurvedSlide : EditorAddKind::StraightSlide,
+			false, meshBoundingRadius(vd));
+		return body;
+	}
+
+	void addEditorCurvedSlide()
+	{
+		if (!editorIsPaused())
+			return;
+		addEditorHalfPipeSlideAt(sausageCenter() + Vector3r(1.6, 1.1, 0.0), true);
+		selectEditorObject(static_cast<int>(editableRigidBodies.size()));
+		std::cout << "Editor added a fixed curved half-pipe slide.\n";
+	}
+
+	void addEditorStraightSlide()
+	{
+		if (!editorIsPaused())
+			return;
+		addEditorHalfPipeSlideAt(sausageCenter() + Vector3r(1.6, 1.1, 0.0), false);
+		selectEditorObject(static_cast<int>(editableRigidBodies.size()));
+		std::cout << "Editor added a fixed straight half-pipe slide.\n";
+	}
+
 	unsigned int addEditorConeAt(const Vector3r &position)
 	{
 		VertexData vd;
@@ -1009,16 +1319,16 @@ namespace
 		const Real radius = static_cast<Real>(0.45);
 		const Real height = static_cast<Real>(1.10);
 		buildConeMesh(vd, mesh, radius, height);
-		const bool dynamic = newEditorObjectsDynamic;
+		const bool dynamic = false;
 		const unsigned int body = addBody(vd, mesh, static_cast<Real>(500.0), position,
-			Quaternionr::Identity(), Vector3r::Ones(), dynamic, static_cast<Real>(0.15), static_cast<Real>(0.16));
+			Quaternionr::Identity(), Vector3r::Ones(), dynamic, static_cast<Real>(0.25), static_cast<Real>(0.02));
 		CubicSDFCollisionDetection::GridPtr coneSDF = generateMeshSDF(vd, mesh,
 			std::array<unsigned int, 3>({ 40u, 56u, 40u }), "editor cone");
 		addMeshSDFCollisionObject(body, coneSDF);
 		const Real bound = std::sqrt(radius * radius + static_cast<Real>(0.25) * height * height);
-		registerEditableRigidBody(body, dynamic ? "dynamic cone" : "added cone", EditorShapeKind::SdfMesh,
+		registerEditableRigidBody(body, "added cone", EditorShapeKind::SdfMesh,
 			Vector3r(radius, height, radius), static_cast<Real>(0.0), false, true,
-			static_cast<Real>(0.15), static_cast<Real>(0.16), dynamic, bound);
+			static_cast<Real>(0.25), static_cast<Real>(0.02), EditorAddKind::Cone, dynamic, bound);
 		return body;
 	}
 
@@ -1028,7 +1338,34 @@ namespace
 			return;
 		addEditorConeAt(sausageCenter() + Vector3r(1.0, 1.45, 0.0));
 		selectEditorObject(static_cast<int>(editableRigidBodies.size()));
-		std::cout << "Editor added a " << (newEditorObjectsDynamic ? "dynamic" : "fixed") << " cone.\n";
+		std::cout << "Editor added a fixed cone.\n";
+	}
+
+	void addSelectedEditorShape()
+	{
+		switch (currentEditorAddKind)
+		{
+		case EditorAddKind::Box:
+			addEditorBox();
+			break;
+		case EditorAddKind::Sphere:
+			addEditorSphere();
+			break;
+		case EditorAddKind::Cone:
+			addEditorCone();
+			break;
+		case EditorAddKind::Ring:
+			addEditorRing();
+			break;
+		case EditorAddKind::CurvedSlide:
+			addEditorCurvedSlide();
+			break;
+		case EditorAddKind::StraightSlide:
+			addEditorStraightSlide();
+			break;
+		default:
+			break;
+		}
 	}
 
 	void createObstacles(const VertexData &boxVd, const IndexedFaceMesh &boxMesh)
@@ -1038,7 +1375,7 @@ namespace
 			false, static_cast<Real>(0.22), static_cast<Real>(0.25));
 		addCollisionBox(platform, Vector3r(18.0, 0.55, 6.5));
 		registerEditableRigidBody(platform, "platform", EditorShapeKind::Box, Vector3r(18.0, 0.55, 6.5), static_cast<Real>(0.0), true, false,
-			static_cast<Real>(0.22), static_cast<Real>(0.25));
+			static_cast<Real>(0.22), static_cast<Real>(0.25), EditorAddKind::Box);
 
 		VertexData ringVd;
 		IndexedFaceMesh ringMesh;
@@ -1049,14 +1386,14 @@ namespace
 		const unsigned int ring1 = addProceduralRing(Vector3r(-3.0, 4.55, 0.0), Quaternionr::Identity(),
 			static_cast<Real>(0.04), static_cast<Real>(0.01), ringSDF, ringVd, ringMesh);
 		registerEditableRigidBody(ring1, "first ring", EditorShapeKind::SdfMesh, Vector3r::Ones(), static_cast<Real>(0.0), false, false,
-			static_cast<Real>(0.04), static_cast<Real>(0.01));
+			static_cast<Real>(0.04), static_cast<Real>(0.01), EditorAddKind::Ring);
 
 		const Vector3r slideExit = slideCenter.back() - slideCenter[slideCenter.size() - 2u];
 		const Quaternionr ring2Rot = rotationFromTo(Vector3r(0.0, 1.0, 0.0), slideExit);
 		const unsigned int ring2 = addProceduralRing(slideCenter.back() + Vector3r(0.60, 0.42, 0.0), ring2Rot,
 			static_cast<Real>(0.04), static_cast<Real>(0.01), ringSDF, ringVd, ringMesh);
 		registerEditableRigidBody(ring2, "second ring", EditorShapeKind::SdfMesh, Vector3r::Ones(), static_cast<Real>(0.0), false, false,
-			static_cast<Real>(0.04), static_cast<Real>(0.01));
+			static_cast<Real>(0.04), static_cast<Real>(0.01), EditorAddKind::Ring);
 
 		VertexData pipeVd;
 		IndexedFaceMesh pipeMesh;
@@ -1067,7 +1404,7 @@ namespace
 			std::array<unsigned int, 3>({ 96u, 40u, 40u }), "procedural half-pipe slide");
 		addMeshSDFCollisionObject(pipeBody, pipeSDF);
 		registerEditableRigidBody(pipeBody, "half-pipe slide", EditorShapeKind::SdfMesh, Vector3r::Ones(), static_cast<Real>(0.0), false, false,
-			static_cast<Real>(0.03), static_cast<Real>(0.0));
+			static_cast<Real>(0.03), static_cast<Real>(0.0), EditorAddKind::CurvedSlide);
 	}
 
 	void resetRod()
@@ -1114,6 +1451,253 @@ namespace
 
 		LOG_INFO << "SausageRod softness: " << softness << "%";
 		std::cout << "SausageRod softness: " << softness << "%\n";
+	}
+
+	std::string editorScenePath()
+	{
+		return FileSystem::normalizePath(base->getExePath() + "/SausageRodEditorScene.json");
+	}
+
+	nlohmann::json vectorToJson(const Vector3r &v)
+	{
+		return nlohmann::json::array({ v.x(), v.y(), v.z() });
+	}
+
+	Vector3r vectorFromJson(const nlohmann::json &j, const Vector3r &fallback = Vector3r::Zero())
+	{
+		if (!j.is_array() || j.size() < 3u)
+			return fallback;
+		return Vector3r(j[0].get<Real>(), j[1].get<Real>(), j[2].get<Real>());
+	}
+
+	nlohmann::json quaternionToJson(const Quaternionr &q)
+	{
+		return nlohmann::json::array({ q.w(), q.x(), q.y(), q.z() });
+	}
+
+	Quaternionr quaternionFromJson(const nlohmann::json &j)
+	{
+		if (!j.is_array() || j.size() < 4u)
+			return Quaternionr::Identity();
+		Quaternionr q(j[0].get<Real>(), j[1].get<Real>(), j[2].get<Real>(), j[3].get<Real>());
+		q.normalize();
+		return q;
+	}
+
+	std::string addKindToString(const EditorAddKind kind)
+	{
+		switch (kind)
+		{
+		case EditorAddKind::Box:
+			return "box";
+		case EditorAddKind::Sphere:
+			return "sphere";
+		case EditorAddKind::Cone:
+			return "cone";
+		case EditorAddKind::Ring:
+			return "ring";
+		case EditorAddKind::CurvedSlide:
+			return "curvedSlide";
+		case EditorAddKind::StraightSlide:
+			return "straightSlide";
+		default:
+			return "cone";
+		}
+	}
+
+	EditorAddKind addKindFromString(const std::string &s)
+	{
+		if (s == "box")
+			return EditorAddKind::Box;
+		if (s == "sphere")
+			return EditorAddKind::Sphere;
+		if (s == "cone")
+			return EditorAddKind::Cone;
+		if (s == "ring")
+			return EditorAddKind::Ring;
+		if (s == "curvedSlide")
+			return EditorAddKind::CurvedSlide;
+		if (s == "straightSlide")
+			return EditorAddKind::StraightSlide;
+		return EditorAddKind::Cone;
+	}
+
+	unsigned int createEditorObjectFromKind(const EditorAddKind kind, const Vector3r &position)
+	{
+		switch (kind)
+		{
+		case EditorAddKind::Box:
+			return addEditorBoxAt(position);
+		case EditorAddKind::Sphere:
+			return addEditorSphereAt(position);
+		case EditorAddKind::Cone:
+			return addEditorConeAt(position);
+		case EditorAddKind::Ring:
+			return addEditorRingAt(position);
+		case EditorAddKind::CurvedSlide:
+			return addEditorHalfPipeSlideAt(position, true);
+		case EditorAddKind::StraightSlide:
+			return addEditorHalfPipeSlideAt(position, false);
+		default:
+			return addEditorBoxAt(position);
+		}
+	}
+
+	void applySavedEditorEntry(const nlohmann::json &saved, EditableRigidBody &entry)
+	{
+		SimulationModel::RigidBodyVector &rb = Simulation::getCurrent()->getModel()->getRigidBodies();
+		if (entry.bodyIndex >= rb.size())
+			return;
+
+		RigidBody *body = rb[entry.bodyIndex];
+		const Vector3r position = vectorFromJson(saved.value("position", nlohmann::json::array()), body->getPosition());
+		const Quaternionr rotation = quaternionFromJson(saved.value("rotation", nlohmann::json::array()));
+		entry.dynamic = saved.value("dynamic", false);
+		entry.velocity = vectorFromJson(saved.value("velocity", nlohmann::json::array()), Vector3r::Zero());
+		entry.angularVelocity = vectorFromJson(saved.value("angularVelocity", nlohmann::json::array()), Vector3r::Zero());
+		entry.uniformScale = static_cast<Real>(saved.value("uniformScale", 1.0));
+		entry.friction = static_cast<Real>(saved.value("friction", static_cast<double>(entry.friction)));
+		entry.restitution = static_cast<Real>(saved.value("restitution", static_cast<double>(entry.restitution)));
+
+		body->setRestitutionCoeff(entry.restitution);
+		body->setFrictionCoeff(entry.friction);
+
+		if (entry.shapeKind == EditorShapeKind::Box)
+		{
+			entry.boxScale = vectorFromJson(saved.value("boxScale", nlohmann::json::array()), entry.boxScale);
+			entry.boundingRadius = static_cast<Real>(0.5) * entry.boxScale.norm();
+			rebuildBoxRigidBody(static_cast<unsigned int>(&entry - editableRigidBodies.data()));
+		}
+		else if (entry.shapeKind == EditorShapeKind::Sphere)
+		{
+			entry.sphereRadius = static_cast<Real>(saved.value("sphereRadius", static_cast<double>(entry.sphereRadius)));
+			entry.boxScale = Vector3r::Constant(entry.sphereRadius);
+			entry.boundingRadius = entry.sphereRadius;
+			rebuildSphereRigidBody(static_cast<unsigned int>(&entry - editableRigidBodies.data()));
+		}
+		else if (entry.shapeKind == EditorShapeKind::SdfMesh)
+		{
+			const Real factor = entry.uniformScale;
+			entry.uniformScale = static_cast<Real>(1.0);
+			if (factor != static_cast<Real>(1.0))
+				scaleSDFRigidBody(static_cast<unsigned int>(&entry - editableRigidBodies.data()), factor);
+		}
+
+		syncRigidBodyTransform(entry.bodyIndex, position, rotation, false);
+		if (entry.dynamic)
+			configureEditorDynamicMassProperties(entry, body);
+		else
+			body->setMass(static_cast<Real>(0.0));
+		body->setVelocity(entry.velocity);
+		body->setVelocity0(entry.velocity);
+		body->setAngularVelocity(entry.angularVelocity);
+		body->setAngularVelocity0(entry.angularVelocity);
+	}
+
+	void saveEditorScene()
+	{
+		nlohmann::json scene;
+		scene["version"] = 1;
+		scene["softness"] = softness;
+		scene["sausageLength"] = sausageLength;
+		scene["sausageRadius"] = sausageRadius;
+		scene["rod"] = nlohmann::json::array();
+		for (unsigned int i = 0u; i < rod.size(); i++)
+		{
+			nlohmann::json p;
+			p["x"] = vectorToJson(rod[i].x);
+			p["oldX"] = vectorToJson(rod[i].oldX);
+			p["v"] = vectorToJson(rod[i].v);
+			if (i < restLocal.size())
+				p["restLocal"] = vectorToJson(restLocal[i]);
+			scene["rod"].push_back(p);
+		}
+
+		SimulationModel::RigidBodyVector &rb = Simulation::getCurrent()->getModel()->getRigidBodies();
+		scene["objects"] = nlohmann::json::array();
+		for (const EditableRigidBody &entry : editableRigidBodies)
+		{
+			if (!entry.active || entry.bodyIndex >= rb.size())
+				continue;
+			RigidBody *body = rb[entry.bodyIndex];
+			nlohmann::json o;
+			o["name"] = entry.name;
+			o["sourceKind"] = addKindToString(entry.sourceKind);
+			o["removable"] = entry.removable;
+			o["dynamic"] = entry.dynamic;
+			o["position"] = vectorToJson(body->getPosition());
+			o["rotation"] = quaternionToJson(body->getRotation());
+			o["boxScale"] = vectorToJson(entry.boxScale);
+			o["sphereRadius"] = entry.sphereRadius;
+			o["uniformScale"] = entry.uniformScale;
+			o["boundingRadius"] = entry.boundingRadius;
+			o["velocity"] = vectorToJson(entry.velocity);
+			o["angularVelocity"] = vectorToJson(entry.angularVelocity);
+			o["friction"] = entry.friction;
+			o["restitution"] = entry.restitution;
+			scene["objects"].push_back(o);
+		}
+
+		std::ofstream out(editorScenePath());
+		out << scene.dump(2);
+		std::cout << "Editor scene saved: " << editorScenePath() << "\n";
+	}
+
+	void loadEditorScene()
+	{
+		std::ifstream in(editorScenePath());
+		if (!in)
+		{
+			std::cout << "Load skipped: no editor scene at " << editorScenePath() << "\n";
+			return;
+		}
+		nlohmann::json scene;
+		in >> scene;
+
+		createCourseModel();
+		softness = static_cast<Real>(scene.value("softness", static_cast<double>(softness)));
+		sausageLength = static_cast<Real>(scene.value("sausageLength", static_cast<double>(sausageLength)));
+		sausageRadius = static_cast<Real>(scene.value("sausageRadius", static_cast<double>(sausageRadius)));
+
+		const nlohmann::json &rodJson = scene.value("rod", nlohmann::json::array());
+		if (rodJson.is_array() && rodJson.size() == rod.size())
+		{
+			for (unsigned int i = 0u; i < rod.size(); i++)
+			{
+				rod[i].x = vectorFromJson(rodJson[i].value("x", nlohmann::json::array()), rod[i].x);
+				rod[i].oldX = vectorFromJson(rodJson[i].value("oldX", nlohmann::json::array()), rod[i].x);
+				rod[i].v = vectorFromJson(rodJson[i].value("v", nlohmann::json::array()), Vector3r::Zero());
+				if (i < restLocal.size())
+					restLocal[i] = vectorFromJson(rodJson[i].value("restLocal", nlohmann::json::array()), restLocal[i]);
+			}
+		}
+
+		unsigned int existingIndex = 0u;
+		const nlohmann::json &objects = scene.value("objects", nlohmann::json::array());
+		for (const nlohmann::json &o : objects)
+		{
+			const bool removable = o.value("removable", false);
+			if (removable)
+			{
+				const EditorAddKind kind = addKindFromString(o.value("sourceKind", std::string("box")));
+				const Vector3r position = vectorFromJson(o.value("position", nlohmann::json::array()), sausageCenter() + Vector3r(1.0, 1.0, 0.0));
+				createEditorObjectFromKind(kind, position);
+				applySavedEditorEntry(o, editableRigidBodies.back());
+			}
+			else
+			{
+				while (existingIndex < editableRigidBodies.size() && editableRigidBodies[existingIndex].removable)
+					existingIndex++;
+				if (existingIndex < editableRigidBodies.size())
+				{
+					applySavedEditorEntry(o, editableRigidBodies[existingIndex]);
+					existingIndex++;
+				}
+			}
+		}
+
+		selectEditorObject(0, false);
+		std::cout << "Editor scene loaded: " << editorScenePath() << "\n";
 	}
 
 	void solveDistanceConstraint(const unsigned int a, const unsigned int b, const Real restLength, const Real stiffness)
@@ -1241,6 +1825,9 @@ namespace
 				continue;
 			if (co->m_bodyIndex >= rb.size())
 				continue;
+			const int editorIndex = editableRigidFromBody(co->m_bodyIndex);
+			if (editorIndex >= 0 && editableRigidBodies[editorIndex].dynamic)
+				continue;
 
 			RigidBody *body = rb[co->m_bodyIndex];
 			const Matrix3r &r = body->getTransformationR();
@@ -1262,8 +1849,16 @@ namespace
 				const Real maxCorrection = static_cast<Real>(0.12);
 				if (len > maxCorrection)
 					correction *= maxCorrection / len;
+				Real friction = body->getFrictionCoeff();
+				Real restitution = body->getRestitutionCoeff();
+				if (editorIndex >= 0 && editableRigidBodies[editorIndex].removable &&
+					editableRigidBodies[editorIndex].shapeKind == EditorShapeKind::SdfMesh)
+				{
+					friction = std::min(friction, static_cast<Real>(0.015));
+					restitution = std::min(restitution, static_cast<Real>(0.12));
+				}
 				applyCorrectionToSample(a, b, t, correction, nWorld,
-					body->getFrictionCoeff(), body->getRestitutionCoeff());
+					friction, restitution);
 			}
 		}
 	}
@@ -1295,6 +1890,170 @@ namespace
 		}
 	}
 
+	void applyRigidBodyContactVelocity(
+		const EditableRigidBody &entry,
+		const Vector3r &normal,
+		Vector3r &velocity)
+	{
+		if (normal.squaredNorm() < static_cast<Real>(1.0e-10))
+			return;
+		Vector3r n = normal.normalized();
+		const Real vn = velocity.dot(n);
+		if (vn < static_cast<Real>(0.0))
+			velocity -= (static_cast<Real>(1.0) + entry.restitution) * vn * n;
+
+		const Vector3r normalVelocity = velocity.dot(n) * n;
+		const Vector3r tangentVelocity = velocity - normalVelocity;
+		const Real tangentDamping = clampReal(entry.friction * static_cast<Real>(0.12),
+			static_cast<Real>(0.0), static_cast<Real>(0.70));
+		velocity = normalVelocity + (static_cast<Real>(1.0) - tangentDamping) * tangentVelocity;
+	}
+
+	bool collisionObjectTestWorld(
+		DistanceFieldCollisionDetection::DistanceFieldCollisionObject *co,
+		RigidBody *body,
+		const Vector3r &worldPoint,
+		const Real tolerance,
+		Vector3r &correction,
+		Vector3r &normal)
+	{
+		const Matrix3r &r = body->getTransformationR();
+		const Vector3r &v1 = body->getTransformationV1();
+		const Vector3r local = r * (worldPoint - body->getPosition()) + v1;
+
+		Vector3r cpLocal;
+		Vector3r nLocal;
+		Real dist;
+		if (!co->collisionTest(local, tolerance, cpLocal, nLocal, dist))
+			return false;
+
+		normal = r.transpose() * nLocal;
+		if (normal.squaredNorm() < static_cast<Real>(1.0e-10))
+			return false;
+		normal.normalize();
+
+		correction = -dist * normal;
+		const Real len = correction.norm();
+		const Real maxCorrection = static_cast<Real>(0.16);
+		if (len > maxCorrection)
+			correction *= maxCorrection / len;
+		return true;
+	}
+
+	void clampAngularVelocity(Vector3r &angularVelocity)
+	{
+		const Real maxAngularSpeed = static_cast<Real>(8.0);
+		const Real speed = angularVelocity.norm();
+		if (speed > maxAngularSpeed)
+			angularVelocity *= maxAngularSpeed / speed;
+	}
+
+	void integrateEditorBodyRotation(
+		EditableRigidBody &entry,
+		RigidBody *body,
+		Quaternionr &rotation)
+	{
+		clampAngularVelocity(entry.angularVelocity);
+		if (entry.angularVelocity.squaredNorm() < static_cast<Real>(1.0e-12))
+			return;
+
+		Quaternionr angularVelocityQ(static_cast<Real>(0.0),
+			entry.angularVelocity.x(), entry.angularVelocity.y(), entry.angularVelocity.z());
+		rotation.coeffs() += static_cast<Real>(0.5) * timeStepSize * (angularVelocityQ * rotation).coeffs();
+		rotation.normalize();
+		entry.angularVelocity *= static_cast<Real>(0.995);
+	}
+
+	void applyImpulseAtEditorContact(
+		EditableRigidBody &entry,
+		RigidBody *body,
+		const Vector3r &bodyPosition,
+		const Vector3r &contactPoint,
+		const Vector3r &normal,
+		const Real restitution,
+		const Real friction)
+	{
+		if (!entry.dynamic || body == nullptr || body->getMass() == static_cast<Real>(0.0))
+			return;
+		if (normal.squaredNorm() < static_cast<Real>(1.0e-10))
+			return;
+
+		const Vector3r n = normal.normalized();
+		const Vector3r r = contactPoint - bodyPosition;
+		const Matrix3r &invInertiaW = body->getInertiaTensorInverseW();
+		const Real invMass = body->getInvMass();
+		const Vector3r contactVelocity = entry.velocity + entry.angularVelocity.cross(r);
+		const Real vn = contactVelocity.dot(n);
+
+		if (vn < static_cast<Real>(0.0))
+		{
+			const Vector3r rn = r.cross(n);
+			Real denom = invMass + n.dot((invInertiaW * rn).cross(r));
+			denom = std::max(denom, static_cast<Real>(1.0e-6));
+			const Real impulseMagnitude = -(static_cast<Real>(1.0) + restitution) * vn / denom;
+			const Vector3r impulse = impulseMagnitude * n;
+			entry.velocity += invMass * impulse;
+			entry.angularVelocity += invInertiaW * r.cross(impulse);
+		}
+
+		const Vector3r updatedContactVelocity = entry.velocity + entry.angularVelocity.cross(r);
+		Vector3r tangentVelocity = updatedContactVelocity - updatedContactVelocity.dot(n) * n;
+		const Real tangentSpeed = tangentVelocity.norm();
+		if (tangentSpeed > static_cast<Real>(1.0e-6))
+		{
+			const Vector3r t = tangentVelocity / tangentSpeed;
+			const Vector3r rt = r.cross(t);
+			Real denom = invMass + t.dot((invInertiaW * rt).cross(r));
+			denom = std::max(denom, static_cast<Real>(1.0e-6));
+			const Real tangentImpulseMagnitude = -clampReal(friction * static_cast<Real>(0.12) * tangentSpeed / denom,
+				static_cast<Real>(0.0), static_cast<Real>(0.08));
+			const Vector3r tangentImpulse = tangentImpulseMagnitude * t;
+			entry.velocity += invMass * tangentImpulse;
+			entry.angularVelocity += invInertiaW * r.cross(tangentImpulse);
+		}
+
+		clampAngularVelocity(entry.angularVelocity);
+	}
+
+	vector<Vector3r> editorObjectSamplePoints(const EditableRigidBody &entry, const Vector3r &position)
+	{
+		vector<Vector3r> samples;
+		SimulationModel::RigidBodyVector &rb = Simulation::getCurrent()->getModel()->getRigidBodies();
+		if (entry.bodyIndex >= rb.size())
+			return samples;
+
+		RigidBody *body = rb[entry.bodyIndex];
+		Quaternionr rotation = body->getRotation();
+		rotation.normalize();
+
+		if (entry.shapeKind == EditorShapeKind::Box)
+		{
+			const Vector3r h = static_cast<Real>(0.5) * entry.boxScale;
+			for (int sx : { -1, 1 })
+			{
+				for (int sy : { -1, 1 })
+				{
+					for (int sz : { -1, 1 })
+						samples.push_back(position + rotation * Vector3r(sx * h.x(), sy * h.y(), sz * h.z()));
+				}
+			}
+			samples.push_back(position + rotation * Vector3r(h.x(), 0.0, 0.0));
+			samples.push_back(position + rotation * Vector3r(-h.x(), 0.0, 0.0));
+			samples.push_back(position + rotation * Vector3r(0.0, h.y(), 0.0));
+			samples.push_back(position + rotation * Vector3r(0.0, -h.y(), 0.0));
+			samples.push_back(position + rotation * Vector3r(0.0, 0.0, h.z()));
+			samples.push_back(position + rotation * Vector3r(0.0, 0.0, -h.z()));
+			return samples;
+		}
+
+		const vector<Vector3r> &vertices = body->getGeometry().getVertexDataLocal().getVertices();
+		const unsigned int maxSamples = 96u;
+		const unsigned int stride = std::max<unsigned int>(1u, static_cast<unsigned int>(vertices.size() / maxSamples));
+		for (unsigned int i = 0u; i < vertices.size(); i += stride)
+			samples.push_back(position + rotation * vertices[i]);
+		return samples;
+	}
+
 	bool dynamicBodyCollidesWithStaticScene(
 		EditableRigidBody &entry,
 		Vector3r &position,
@@ -1302,7 +2061,9 @@ namespace
 	{
 		SimulationModel *model = Simulation::getCurrent()->getModel();
 		const SimulationModel::RigidBodyVector &rb = model->getRigidBodies();
-		const Real tolerance = std::max(entry.boundingRadius, static_cast<Real>(0.05)) + collisionSkin;
+		if (entry.bodyIndex >= rb.size())
+			return false;
+		RigidBody *movingBody = rb[entry.bodyIndex];
 		bool collided = false;
 
 		for (CollisionDetection::CollisionObject *baseObject : cd->getCollisionObjects())
@@ -1319,35 +2080,99 @@ namespace
 				continue;
 
 			RigidBody *body = rb[co->m_bodyIndex];
-			const Matrix3r &r = body->getTransformationR();
-			const Vector3r &v1 = body->getTransformationV1();
-			const Vector3r local = r * (position - body->getPosition()) + v1;
-
-			Vector3r cpLocal;
-			Vector3r nLocal;
-			Real dist;
-			if (!co->collisionTest(local, tolerance, cpLocal, nLocal, dist))
+			if (entry.shapeKind == EditorShapeKind::Sphere)
+			{
+				Vector3r correction;
+				Vector3r normal;
+				if (collisionObjectTestWorld(co, body, position, entry.sphereRadius + collisionSkin, correction, normal))
+				{
+					position += correction;
+					const Vector3r contactPoint = position - entry.sphereRadius * normal;
+					applyImpulseAtEditorContact(entry, movingBody, position, contactPoint, normal, entry.restitution, entry.friction);
+					velocity = entry.velocity;
+					collided = true;
+				}
 				continue;
+			}
 
-			Vector3r nWorld = r.transpose() * nLocal;
-			if (nWorld.squaredNorm() < static_cast<Real>(1.0e-10))
-				continue;
-			nWorld.normalize();
-			position += (-dist) * nWorld;
-
-			const Real vn = velocity.dot(nWorld);
-			if (vn < static_cast<Real>(0.0))
-				velocity -= (static_cast<Real>(1.0) + entry.restitution) * vn * nWorld;
-
-			const Vector3r normalVelocity = velocity.dot(nWorld) * nWorld;
-			const Vector3r tangentVelocity = velocity - normalVelocity;
-			const Real tangentDamping = clampReal(entry.friction * static_cast<Real>(0.12),
-				static_cast<Real>(0.0), static_cast<Real>(0.70));
-			velocity = normalVelocity + (static_cast<Real>(1.0) - tangentDamping) * tangentVelocity;
-			collided = true;
+			const vector<Vector3r> samples = editorObjectSamplePoints(entry, position);
+			for (const Vector3r &sample : samples)
+			{
+				Vector3r correction;
+				Vector3r normal;
+				if (!collisionObjectTestWorld(co, body, sample, collisionSkin, correction, normal))
+					continue;
+				position += correction;
+				applyImpulseAtEditorContact(entry, movingBody, position, sample, normal, entry.restitution, entry.friction);
+				velocity = entry.velocity;
+				collided = true;
+			}
 		}
 
 		return collided;
+	}
+
+	Real dynamicPairRadius(const EditableRigidBody &entry)
+	{
+		if (entry.shapeKind == EditorShapeKind::Sphere)
+			return entry.sphereRadius;
+		if (entry.shapeKind == EditorShapeKind::Box)
+			return static_cast<Real>(0.5) * entry.boxScale.minCoeff();
+		return std::max(static_cast<Real>(0.25), std::min(entry.boundingRadius, static_cast<Real>(0.65)));
+	}
+
+	void resolveDynamicEditorObjectPairs()
+	{
+		if (editorIsPaused())
+			return;
+
+		SimulationModel::RigidBodyVector &rb = Simulation::getCurrent()->getModel()->getRigidBodies();
+		for (unsigned int i = 0u; i < editableRigidBodies.size(); i++)
+		{
+			EditableRigidBody &a = editableRigidBodies[i];
+			if (!a.active || !a.dynamic || a.bodyIndex >= rb.size())
+				continue;
+			for (unsigned int j = i + 1u; j < editableRigidBodies.size(); j++)
+			{
+				EditableRigidBody &b = editableRigidBodies[j];
+				if (!b.active || !b.dynamic || b.bodyIndex >= rb.size())
+					continue;
+
+				RigidBody *bodyA = rb[a.bodyIndex];
+				RigidBody *bodyB = rb[b.bodyIndex];
+				Vector3r delta = bodyB->getPosition() - bodyA->getPosition();
+				Real distance = delta.norm();
+				if (distance < static_cast<Real>(1.0e-8))
+				{
+					delta = Vector3r(1.0, 0.0, 0.0);
+					distance = static_cast<Real>(1.0);
+				}
+				const Real targetDistance = dynamicPairRadius(a) + dynamicPairRadius(b) + collisionSkin;
+				if (distance >= targetDistance)
+					continue;
+
+				const Vector3r normal = delta / distance;
+				const Vector3r correction = static_cast<Real>(0.5) * (targetDistance - distance) * normal;
+				const Vector3r posA = bodyA->getPosition() - correction;
+				const Vector3r posB = bodyB->getPosition() + correction;
+				syncRigidBodyTransform(a.bodyIndex, posA, bodyA->getRotation(), false);
+				syncRigidBodyTransform(b.bodyIndex, posB, bodyB->getRotation(), false);
+
+				const Vector3r relativeVelocity = b.velocity - a.velocity;
+				const Real vn = relativeVelocity.dot(normal);
+				if (vn < static_cast<Real>(0.0))
+				{
+					const Real restitution = static_cast<Real>(0.5) * (a.restitution + b.restitution);
+					const Vector3r impulse = static_cast<Real>(0.5) * (static_cast<Real>(1.0) + restitution) * vn * normal;
+					a.velocity += impulse;
+					b.velocity -= impulse;
+				}
+				bodyA->setVelocity(a.velocity);
+				bodyA->setVelocity0(a.velocity);
+				bodyB->setVelocity(b.velocity);
+				bodyB->setVelocity0(b.velocity);
+			}
+		}
 	}
 
 	void integrateDynamicEditorObjects()
@@ -1368,6 +2193,7 @@ namespace
 			entry.velocity += timeStepSize * Vector3r(0.0, gravityY, 0.0);
 			Vector3r position = body->getPosition() + timeStepSize * entry.velocity;
 			dynamicBodyCollidesWithStaticScene(entry, position, entry.velocity);
+			integrateEditorBodyRotation(entry, body, rotation);
 
 			syncRigidBodyTransform(entry.bodyIndex, position, rotation, false);
 			body->setVelocity(entry.velocity);
@@ -1375,6 +2201,7 @@ namespace
 			body->setAngularVelocity(entry.angularVelocity);
 			body->setAngularVelocity0(entry.angularVelocity);
 		}
+		resolveDynamicEditorObjectPairs();
 	}
 
 	void applyContactVelocities()
@@ -1717,11 +2544,19 @@ int main(int argc, char **argv)
 	MiniGL::addKeyFunc('f', []() { stretchSelectedBoxLocal(2u, static_cast<Real>(1.0), static_cast<Real>(0.15)); });
 	MiniGL::addKeyFunc('g', []() { stretchSelectedBoxLocal(0u, static_cast<Real>(-1.0), static_cast<Real>(0.15)); });
 	MiniGL::addKeyFunc('h', []() { stretchSelectedBoxLocal(1u, static_cast<Real>(1.0), static_cast<Real>(0.15)); });
-	MiniGL::addKeyFunc('t', toggleNewEditorObjectDynamics);
-	MiniGL::addKeyFunc('n', addEditorBox);
+	MiniGL::addKeyFunc('1', []() { setEditorAddKind(EditorAddKind::Box); });
+	MiniGL::addKeyFunc('2', []() { setEditorAddKind(EditorAddKind::Sphere); });
+	MiniGL::addKeyFunc('3', []() { setEditorAddKind(EditorAddKind::Cone); });
+	MiniGL::addKeyFunc('4', []() { setEditorAddKind(EditorAddKind::Ring); });
+	MiniGL::addKeyFunc('5', []() { setEditorAddKind(EditorAddKind::CurvedSlide); });
+	MiniGL::addKeyFunc('6', []() { setEditorAddKind(EditorAddKind::StraightSlide); });
+	MiniGL::addKeyFunc('t', toggleSelectedEditorObjectDynamics);
+	MiniGL::addKeyFunc('n', addSelectedEditorShape);
 	MiniGL::addKeyFunc('m', addEditorSphere);
 	MiniGL::addKeyFunc('v', addEditorCone);
 	MiniGL::addKeyFunc('d', deleteSelectedEditorObject);
+	MiniGL::addKeyFunc('p', []() { if (editorIsPaused()) saveEditorScene(); });
+	MiniGL::addKeyFunc('b', []() { if (editorIsPaused()) loadEditorScene(); });
 	MiniGL::addMousePressFunc(editorMousePress);
 	MiniGL::addMouseMoveFunc(editorMouseMove);
 	MiniGL::setViewport(40.0f, 0.1f, 500.0f, Vector3r(-0.2, 4.1, 11.5), Vector3r(-0.3, 2.3, 0.0));
@@ -1736,10 +2571,13 @@ int main(int argc, char **argv)
 		<< "  q: select next object\n"
 		<< "  i/k/j/l/u/o: move selected object\n"
 		<< "  z/x/c: rotate selected object around global Z/X/Y\n"
-		<< "  [/]: scale selected box or sphere object\n"
+		<< "  [/]: scale selected object, including sausage and SDF objects\n"
 		<< "  f/g/h: stretch selected box along local front/left/up\n"
-		<< "  t: toggle new object fixed/dynamic\n"
-		<< "  n/m/v: add box/sphere/cone, d: delete selected editor-added object\n";
+		<< "  1/2/3/4/5/6: select add shape box/sphere/cone/ring/curved slide/straight slide\n"
+		<< "  n: add selected shape, m/v: quick-add sphere/cone\n"
+		<< "  t: toggle selected editor-added object fixed/dynamic\n"
+		<< "  p/b: save/load editor scene\n"
+		<< "  d: delete selected editor-added object\n";
 
 	MiniGL::mainLoop();
 

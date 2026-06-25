@@ -1,3 +1,0 @@
-#include "cubic_lagrange_discrete_grid.hpp"
-#include "geometry/TriangleMeshDistance.h"
-#include "mesh/triangle_mesh.hpp"

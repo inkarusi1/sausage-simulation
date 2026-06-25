@@ -19,7 +19,7 @@
 
 | Demo | 可执行文件 | 说明 |
 | --- | --- | --- |
-| `SausageRodEditorDemo` | `bin/SausageRodEditorDemo.exe` | 当前推荐入口。基于中心线杆香肠，支持暂停后选择、拖动、移动、全局轴旋转、盒体拉伸、缩放盒体/球体、新增/删除盒体和球体。 |
+| `SausageRodEditorDemo` | `bin/SausageRodEditorDemo.exe` | 当前推荐入口。基于中心线杆香肠，支持暂停后选择、拖动、移动、全局轴旋转、盒体拉伸、缩放香肠/原场景物体/新增物体、新增盒体/球体/锥体/圆环/滑轨、删除新增物体、保存与加载编辑场景。 |
 | `SausageRodCourseDemo` | `bin/SausageRodCourseDemo.exe` | 较轻量的香肠物理过程 demo，无暂停编辑层。 |
 | `SausagePhysicsCourseDemo` | `bin/SausagePhysicsCourseDemo.exe` | 早期四面体/软体方向实现，保留作对比。 |
 
@@ -45,9 +45,12 @@ SausageRodEditorDemo.exe
 - 暂停后 `q`：切换选中对象。
 - 暂停后 `i/k/j/l/u/o`：沿 y/x/z 轴移动。
 - 暂停后 `z/x/c`：绕全局 Z/X/Y 轴旋转。
-- 暂停后 `[` / `]`：缩放盒体或球体对象。
+- 暂停后 `[` / `]`：缩放当前选中对象，包括香肠、原场景 SDF 物体和编辑器新增物体。
 - 暂停后 `f/g/h`：沿局部前/左/上方向拉伸盒体。
-- 暂停后 `n/m` / `d`：新增盒体/球体，或删除编辑器新增对象。
+- 暂停后 `1/2/3/4/5/6`：选择新建形状：盒体、球体、锥体、圆环、弯曲滑轨、直滑轨。
+- 暂停后 `n`：新建当前数字键选中的形状。
+- 暂停后 `t` / `d`：切换选中编辑器新增对象的固定/动态状态，或删除编辑器新增对象。
+- 暂停后 `p` / `b`：保存/加载编辑场景，文件位于 `bin/SausageRodEditorScene.json`。
 
 更完整的键鼠说明以 `OP.md` 为准。
 
@@ -56,5 +59,5 @@ SausageRodEditorDemo.exe
 - 原仓库的通用加载和物理步进主要通过 `SceneLoaderDemo`、`SimulationModel`、`TimeStepController`、`CubicSDFCollisionDetection` 等实现。
 - 课程新增的香肠 demo 为手写 C++ 场景，不完全等同于 JSON 场景加载流程。
 - 暂停编辑能力目前属于 `SausageRodEditorDemo` 的局部功能，不是全仓库通用编辑器。
-- 复杂 SDF 物体运行时不建议直接缩放；应重建网格和 SDF，避免视觉与碰撞错位。
-- 删除原始场景对象会牵动刚体下标、碰撞对象和约束引用；当前只允许删除编辑器新增盒体和球体。
+- 复杂 SDF 物体的缩放会同步视觉网格和 SDF 缩放值；若以后改为非等比缩放，仍应重建网格和 SDF。
+- 删除原始场景对象会牵动刚体下标、碰撞对象和约束引用；当前只允许删除编辑器新增对象。
