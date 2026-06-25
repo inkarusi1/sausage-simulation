@@ -1,9 +1,9 @@
-# 一键配置并构建 SausageRodEditorDemo
-# 在仓库根目录以 PowerShell 运行: .\setup_and_build.ps1
+# Setup and build SausageRodEditorDemo
+# Run from repo root: .\setup_and_build.ps1
 #
-# 可选参数:
-#   -Config   Debug | Release (默认 Release)
-#   -Rebuild  若 build-vs2 已存在，删除后重新生成（用于环境异常时）
+# Optional params:
+#   -Config   Debug | Release (default: Release)
+#   -Rebuild  Delete build-vs2 and regenerate from scratch
 param(
     [string]$Config = "Release",
     [switch]$Rebuild
@@ -12,55 +12,70 @@ param(
 $Root = $PSScriptRoot
 $BuildDir = Join-Path $Root "build-vs2"
 
-# ── 1. 找 cmake ──────────────────────────────────────────────────────────────
-$CmakePaths = @(
+# ---- Find cmake ---------------------------------------------------------------
+$CmakeCandidates = @(
     "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe",
     "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe",
+    "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe",
     "C:\Program Files\CMake\bin\cmake.exe"
 )
 $Cmake = $null
-foreach ($p in $CmakePaths) { if (Test-Path $p) { $Cmake = $p; break } }
-if (-not $Cmake) { $Cmake = (Get-Command cmake -ErrorAction SilentlyContinue)?.Source }
+foreach ($p in $CmakeCandidates) {
+    if (Test-Path $p) { $Cmake = $p; break }
+}
 if (-not $Cmake) {
-    Write-Error "找不到 cmake，请安装 CMake 或 Visual Studio 2022（含 CMake 组件）后重试。"
+    $cmd = Get-Command cmake -ErrorAction SilentlyContinue
+    if ($cmd) { $Cmake = $cmd.Source }
+}
+if (-not $Cmake) {
+    Write-Error "cmake not found. Install Visual Studio 2022 with C++ workload (includes CMake)."
     exit 1
 }
-Write-Host "[cmake] $Cmake"
+Write-Host "[cmake]   $Cmake"
 
-# ── 2. 找 MSBuild ─────────────────────────────────────────────────────────────
-$MsbuildPaths = @(
+# ---- Find MSBuild -------------------------------------------------------------
+$MsbuildCandidates = @(
     "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\amd64\MSBuild.exe",
     "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\amd64\MSBuild.exe",
     "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64\MSBuild.exe"
 )
 $MSBuild = $null
-foreach ($p in $MsbuildPaths) { if (Test-Path $p) { $MSBuild = $p; break } }
-if (-not $MSBuild) { $MSBuild = (Get-Command MSBuild -ErrorAction SilentlyContinue)?.Source }
+foreach ($p in $MsbuildCandidates) {
+    if (Test-Path $p) { $MSBuild = $p; break }
+}
 if (-not $MSBuild) {
-    Write-Error "找不到 MSBuild，请安装 Visual Studio 2022（含 C++ 桌面开发工作负载）后重试。"
+    $cmd = Get-Command MSBuild -ErrorAction SilentlyContinue
+    if ($cmd) { $MSBuild = $cmd.Source }
+}
+if (-not $MSBuild) {
+    Write-Error "MSBuild not found. Install Visual Studio 2022 with C++ Desktop workload."
     exit 1
 }
 Write-Host "[MSBuild] $MSBuild"
 
-# ── 3. CMake 配置（生成 build-vs2/） ─────────────────────────────────────────
+# ---- CMake configure (generate build-vs2/) ------------------------------------
 if ($Rebuild -and (Test-Path $BuildDir)) {
-    Write-Host "删除旧 build-vs2/ ..."
+    Write-Host "Removing existing build-vs2/ ..."
     Remove-Item $BuildDir -Recurse -Force
 }
 
-if (-not (Test-Path (Join-Path $BuildDir "PositionBasedDynamics.sln"))) {
-    Write-Host "`n=== 运行 CMake 配置（首次约需 1 分钟）==="
+$SlnFile = Join-Path $BuildDir "PositionBasedDynamics.sln"
+if (-not (Test-Path $SlnFile)) {
+    Write-Host ""
+    Write-Host "=== CMake configure (first time, ~1 min) ==="
     & $Cmake -S $Root -B $BuildDir -G "Visual Studio 17 2022" -A x64
-    if ($LASTEXITCODE -ne 0) { Write-Error "CMake 配置失败"; exit 1 }
+    if ($LASTEXITCODE -ne 0) { Write-Error "CMake configure failed."; exit 1 }
 } else {
-    Write-Host "build-vs2/ 已存在，跳过 CMake 配置。（若要重新生成请加 -Rebuild 参数）"
+    Write-Host "build-vs2/ already exists, skipping CMake. (Use -Rebuild to regenerate)"
 }
 
-# ── 4. MSBuild 编译 ───────────────────────────────────────────────────────────
+# ---- MSBuild compile ----------------------------------------------------------
 $Proj = Join-Path $BuildDir "Demos\SausageRodEditorDemo\SausageRodEditorDemo.vcxproj"
-Write-Host "`n=== 编译 SausageRodEditorDemo ($Config) ==="
+Write-Host ""
+Write-Host "=== Building SausageRodEditorDemo ($Config x64) ==="
 & $MSBuild $Proj /p:Configuration=$Config /p:Platform=x64 /m
-if ($LASTEXITCODE -ne 0) { Write-Error "MSBuild 编译失败"; exit 1 }
+if ($LASTEXITCODE -ne 0) { Write-Error "MSBuild failed."; exit 1 }
 
-Write-Host "`n构建成功！可执行文件：bin\SausageRodEditorDemo.exe"
-Write-Host "运行方式：cd bin && .\SausageRodEditorDemo.exe"
+Write-Host ""
+Write-Host "Build succeeded! Output: bin\SausageRodEditorDemo.exe"
+Write-Host "To run: cd bin; .\SausageRodEditorDemo.exe"
