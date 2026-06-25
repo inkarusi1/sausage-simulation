@@ -6,6 +6,69 @@
 
 当前课程项目主要关注“香肠下落、圆环、半管滑轨、平台、柔软度控制、暂停编辑”等演示功能。建议优先阅读下面几份本地文档。
 
+## 构建说明（首次 clone 后必读）
+
+> **git 仓库只包含源码和依赖头文件，不包含 `build-vs2/` 编译目录。**
+> clone 后需先运行 CMake 生成 VS 项目，再用 MSBuild 编译。
+
+### 前提条件
+
+- Windows 10/11 64-bit
+- Visual Studio 2022（含 **"使用 C++ 的桌面开发"** 工作负载，内含 MSBuild 和 CMake）
+
+### 一键构建（推荐）
+
+在仓库根目录打开 PowerShell，执行：
+
+```powershell
+.\setup_and_build.ps1
+```
+
+脚本会自动完成：
+1. 调用 CMake 生成 `build-vs2/`（首次约 1 分钟）
+2. 用 MSBuild 编译 `SausageRodEditorDemo`（Release x64）
+3. 产物输出到 `bin/SausageRodEditorDemo.exe`
+
+> 若 PowerShell 报"执行策略"错误，先运行：`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+
+### 手动构建
+
+**第一步：CMake 配置（仅首次需要）**
+
+```powershell
+cmake -S . -B build-vs2 -G "Visual Studio 17 2022" -A x64
+```
+
+**第二步：MSBuild 编译**
+
+```powershell
+& 'C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\amd64\MSBuild.exe' `
+  'build-vs2\Demos\SausageRodEditorDemo\SausageRodEditorDemo.vcxproj' `
+  /p:Configuration=Release /p:Platform=x64 /m
+```
+
+> Community 版用户将路径中的 `Professional` 改为 `Community`。
+
+**第三步：运行**
+
+```bat
+cd bin
+SausageRodEditorDemo.exe
+```
+
+### git 仓库结构说明
+
+| 路径 | 是否在 git | 说明 |
+| --- | --- | --- |
+| `Demos/`, `PositionBasedDynamics/`, 等 | ✓ 已追踪 | C++ 源码 |
+| `extern/` | ✓ 已追踪 | 第三方依赖头文件（eigen、glfw、imgui 等） |
+| `data/` | ✓ 已追踪 | 模型、场景 JSON、SDF 缓存 |
+| `build-vs2/` | ✗ 忽略 | CMake 生成的 VS 项目 + 编译中间产物（~900MB） |
+| `bin/*.exe` | ✗ 忽略 | 编译输出的可执行文件 |
+| `bin/resources/` | ✗ 忽略 | 构建时自动从 `data/` 复制的运行时资源 |
+
+---
+
 ## 文档导航
 
 | 文档 | 用途 | 建议阅读时机 |
