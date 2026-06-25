@@ -6,12 +6,12 @@
 
 | 需求 | 结论 | 主要缺口 |
 | --- | --- | --- |
-| `z/x/c` 分别绕 Z/X/Y 单方向旋转，并保持当前相对全局坐标系 | 可实现，改动小 | 当前只有 `z/x` 正反绕 Y；需要泛化为任意全局轴旋转 |
-| 删除数字快捷键调柔软度 | 可实现，改动小 | 移除 `0/1/5/9` 注册和提示文案；实现后同步 `OP.md` |
-| 新增对象沿自身正/左/上方向拉伸 | 盒体可较快实现；复杂 SDF 物体需重建 | 当前只有 box 均匀缩放；方向拉伸要按局部轴修改尺寸并平移中心 |
-| 可新增盒、球、锥体、弯滑轨、直/平滑轨 | 盒/球容易；弯滑轨和直轨可重构生成器；锥体需 SDF 或新碰撞类型 | 原碰撞 API 没有 cone 解析碰撞；滑轨是程序网格 + SDF |
-| 新增物体可选择固定/非固定，非固定受重力 | 可实现，但不是只改 `dynamic=true` | 当前 editor demo 没有推进 PBD 刚体求解，也没有把 `cd` 接到 `TimeStepController` |
-| 运行状态中让选中物体平移/旋转 | 可设计，建议区分“运动控制”和“直接编辑” | 当前编辑函数都要求暂停；运行中直接改 transform 会造成瞬移/速度问题 |
+| `z/x/c` 分别绕 Z/X/Y 单方向旋转，并保持当前相对全局坐标系 | 可实现，改动小（已完成） | 已改成 `z/x/c` 分别绕全局 Z/X/Y 单方向旋转；旧的 Y 轴正反绑定已清掉 |
+| 删除数字快捷键调柔软度 | 可实现，改动小（已完成） | 已移除 `0/1/5/9` 注册和提示文案；`+/-` 继续保留为细调 |
+| 新增对象沿自身正/左/上方向拉伸 | 盒体可较快实现；复杂 SDF 物体需重建（盒体已完成） | 盒体已按局部轴拉伸并同步碰撞盒；球/锥/轨道还要各自重建 |
+| 可新增盒、球、锥体、弯滑轨、直/平滑轨 | 盒/球容易；弯滑轨和直轨可重构生成器；锥体需 SDF 或新碰撞类型（盒/球/锥体已完成） | 盒/球/锥体已接入；弯滑轨和直轨工厂仍待抽象 |
+| 新增物体可选择固定/非固定，非固定受重力 | 可实现，但不是只改 `dynamic=true`（轻量版已完成） | 已做轻量 fixed/dynamic、重力和静态场接触；原生 PBD 刚体 step 还没接 |
+| 运行状态中让选中物体平移/旋转 | 可设计，建议区分“运动控制”和“直接编辑”（刚体 kinematic 控制已完成） | 已做运行中 kinematic 编辑；动态刚体速度控制还没做 |
 | 香肠除柔软度外设置“粘度”，100% 完全粘住 | 不能直接靠原有参数完成；需新增粘附逻辑 | 现有主要是摩擦/回弹/接触约束；当前 rod 香肠不是 `ParticleData`，不能直接套用已有 particle joint |
 
 ## 当前实现边界
@@ -21,46 +21,47 @@
 - 当前障碍物是 `RigidBody` + `CubicSDFCollisionDetection` 碰撞对象，但主要作为香肠采样碰撞的静态障碍。
 - `DemoBase::step()` 只做导出，不会推进 PBD 刚体求解；当前 editor demo 的 `timeStep()` 调用 `base->step()`，没有调用 `Simulation::getCurrent()->getTimeStep()->step(*model)`。
 - `cd` 当前用于香肠自写碰撞查询，但源码中没有看到 `Simulation::getCurrent()->getTimeStep()->setCollisionDetection(*model, cd)`。
-- 因此，当前新增盒体虽然通过 `addBody(... dynamic=false ...)` 建成刚体，但它本质上仍是静态可编辑障碍；若直接把新增物体改成 `dynamic=true`，还不足以让它完整参与重力、刚体碰撞和接触求解。
+- 因此，当前新增对象已经支持 fixed/dynamic 的轻量模式和运行中 kinematic 编辑（已完成），但还没有接入原生 PBD 刚体 step，也还没有把香肠接触反作用力推回动态刚体。
+- 另外，场景里已经把摩擦和接触切向阻尼调低了一些，减少了拖拽感和下落迟滞（已完成）。
 
-## 1. `z/x/c` 全局轴单方向旋转
+## 1. `z/x/c` 全局轴单方向旋转（已完成）
 
-可实现。当前源码中：
+已完成。原先源码中的问题是：
 
 - `rotateSausageY(angle)` 只支持绕全局 Y 轴旋转香肠中心线。
 - `rotateSelectedEditorObjectY(angle)` 只支持绕全局 Y 轴旋转选中刚体。
-- `z` 和 `x` 现在分别绑定到 Y 轴负/正方向旋转。
+- `z` 和 `x` 原先分别绑定到 Y 轴负/正方向旋转。
 
-建议改法：
+已按下面方式完成：
 
-1. 把 `rotateSausageY(angle)` 泛化为 `rotateSausageAroundAxis(axis, angle)`。
-2. 把 `rotateSelectedEditorObjectY(angle)` 泛化为 `rotateSelectedEditorObjectAroundGlobalAxis(axis, angle)`。
-3. 保持“相对全局坐标系”的做法：刚体四元数用 `qDelta * currentRotation`，不要改成 `currentRotation * qDelta`。
-4. 绑定：
+1. `rotateSausageAroundAxis(axis, angle)` 已完成。
+2. `rotateSelectedEditorObjectAroundGlobalAxis(axis, angle)` 已完成。
+3. 保持“相对全局坐标系”的做法已完成：刚体四元数用 `qDelta * currentRotation`，不是 `currentRotation * qDelta`。
+4. 按键绑定已完成：
    - `z`: 绕全局 Z 轴单方向旋转。
    - `x`: 绕全局 X 轴单方向旋转。
    - `c`: 绕全局 Y 轴单方向旋转。
 
 “单方向旋转”意味着每次按键只加同一个正角度，例如 `+10` 度。若以后需要反向旋转，建议用 UI 按钮或明确的反向模式；不要马上占用数字键。
 
-## 2. 删除数字柔软度快捷键
+## 2. 删除数字柔软度快捷键（已完成）
 
-可实现。当前 `main.cpp` 中注册了：
+可实现。原先 `main.cpp` 中注册了：
 
 - `0`: softness 0%
 - `1`: softness 10%
 - `5`: softness 50%
 - `9`: softness 100%
 
-后续可直接删除这些 `MiniGL::addKeyFunc()` 注册，并删除启动提示里的 `0/1/5/9` 文案。`+/-` 是否保留可以单独决定：用户当前要求是删除“数字快捷键”，所以最小改动是只移除数字预设，把 `+/-` 继续留作柔软度细调。
+这部分已完成：`MiniGL::addKeyFunc()` 里的 `0/1/5/9` 注册已经删掉，启动提示里的 `0/1/5/9` 文案也去掉了；`+/-` 继续留作柔软度细调。
 
-注意：`OP.md` 中已经记录 `1/2/3/4` 在 MiniGL 里也有视图旋转相关风险，因此释放数字键是正确方向。实现后需要同步更新 `OP.md` 和 `README.md` 的快捷键说明。
+注意：`OP.md` 中已经记录 `1/2/3/4` 在 MiniGL 里也有视图旋转相关风险，因此释放数字键是正确方向。正式确认功能稳定后，再同步更新 `OP.md` 和 `README.md` 的快捷键说明。
 
-## 3. 沿对象自身正/左/上方向拉伸
+## 3. 沿对象自身正/左/上方向拉伸（盒体已完成）
 
-盒体可实现，复杂物体要分层处理。
+盒体局部方向拉伸已完成，复杂物体仍要分层处理。
 
-当前缩放只有 `scaleSelectedEditorObject(factor)`，它做的是：
+基础缩放路径仍沿用 `scaleSelectedEditorObject(factor)`，它做的是：
 
 1. 修改 `EditableRigidBody::boxScale`。
 2. 用 cube 网格重新 `initBody()`。
@@ -87,31 +88,31 @@
 - 球体：非均匀拉伸会变成椭球，但现有 `addCollisionSphere` 只能表示球；要么只允许等比缩放，要么改用 SDF/box 代理。
 - 锥体、滑轨、圆环等 SDF 物体：不能只改 mesh scale；应重建可视网格和 SDF，否则视觉与碰撞场会错位。
 
-## 4. 新增物体类型
+## 4. 新增物体类型（盒/球/锥体已完成）
 
-建议把 `addEditorBox()` 重构成通用对象工厂，例如 `addEditorObject(shapeKind, fixed)`，并扩展 `EditableRigidBody` 记录形状类型、局部尺寸、是否 SDF、是否动态、是否可删除。
+当前已把新增盒/球/锥体纳入同一套 `EditableRigidBody` 记录，包括形状类型、局部尺寸/半径、是否 SDF、是否动态、是否可删除。若继续加滑轨，再抽更通用的 `addEditorObject(shapeKind, fixed)` factory。
 
 | 类型 | 可行性 | 实现路线 |
 | --- | --- | --- |
-| 盒体 | 已有 | 复用 `cube.obj`、`addCollisionBox()`、`boxScale` |
-| 球体 | 容易 | `bin/resources/models/sphere.obj` 已存在；新增 `addCollisionSphere()` helper |
-| 锥体 | 中等 | 原仓库没有 cone 解析碰撞；需程序生成 cone mesh 并用 `addCubicSDFCollisionObject()`，或新增 `DistanceFieldCollisionCone` |
+| 盒体 | 已有（已完成） | 复用 `cube.obj`、`addCollisionBox()`、`boxScale` |
+| 球体 | 容易（已完成） | `bin/resources/models/sphere.obj` 已存在；新增 `addCollisionSphere()` helper |
+| 锥体 | 中等（已完成：程序 mesh + SDF） | 原仓库没有 cone 解析碰撞；需程序生成 cone mesh 并用 `addCubicSDFCollisionObject()`，或新增 `DistanceFieldCollisionCone` |
 | 弯滑轨 | 可行但要重构 | 当前由 `makeCoursePath()` + `buildHalfPipeMesh()` + `generateMeshSDF()` 生成；抽成可复用 factory 后可新增副本 |
 | 直/平滑轨 | 可行 | 用直线路径复用半管网格生成器，或参考旧 `SausageCourseDemo` 的 plank/cylinder 简化轨道；若要光滑半管碰撞，仍建议 SDF |
 
-球体新增时还要补：
+球体新增时还要补（已完成的先留档）：
 
-- `addCollisionSphere(body, radius)` helper。
-- `EditableRigidBody` 中保存 radius 或统一保存 `Vector3r scale`。
-- 删除时沿用“停用并移到远处”，避免 erase 刚体导致索引和碰撞对象引用失效。
+- `addCollisionSphere(body, radius)` helper。（已完成）
+- `EditableRigidBody` 中保存 radius 或统一保存 `Vector3r scale`。（已完成）
+- 删除时沿用“停用并移到远处”，避免 erase 刚体导致索引和碰撞对象引用失效。（已完成）
 
-锥体新增时要注意：
+锥体新增时要注意（已完成的实现也保留说明）：
 
-- `bin/resources/models` 里目前有 `cube.obj`、`sphere.obj`、`cylinder.obj`、`torus.obj`，没有看到 cone 模型。
-- 若临时需要锥体，可程序生成 mesh；若希望准确碰撞，优先用 mesh SDF。
-- 若锥体会频繁缩放/拉伸，重建 SDF 的成本要纳入交互设计。
+- `bin/resources/models` 里目前有 `cube.obj`、`sphere.obj`、`cylinder.obj`、`torus.obj`，没有看到 cone 模型。（已完成：当前用程序 mesh 兜底）
+- 若临时需要锥体，可程序生成 mesh；若希望准确碰撞，优先用 mesh SDF。（已完成：当前用程序 mesh + mesh SDF）
+- 当前锥体只支持新增、移动、旋转；若以后要频繁缩放/拉伸，仍需把重建 SDF 的成本纳入交互设计。
 
-## 5. 固定/非固定新增物体
+## 5. 固定/非固定新增物体（轻量版已完成）
 
 概念上可实现。当前 `addBody(..., dynamic, ...)` 已经有 `dynamic` 参数：
 
@@ -131,23 +132,23 @@
 
 更细的物理边界：
 
-- 动态新增物体与静态平台、盒体、SDF 障碍的刚体接触可走原 PBD 流程。
+- 动态新增物体与静态平台、盒体、SDF 障碍的轻量接触响应已接入（已完成），但还不是原 PBD 刚体流程。
 - 香肠当前不是 `SimulationModel` 里的粒子/软体，香肠与新增动态物体的碰撞是自写 rod 采样逻辑。当前逻辑只修正香肠点的位置和速度，不会把反作用力推回动态刚体。
 - 因此如果目标是“香肠能把非固定盒子/球体撞飞”，还需要在 `collideSampleWithObjects()` 或接触后处理里把冲量/位置修正反作用到对应刚体，或者把香肠迁移回原仓库的粒子/四面体软体体系。
 
-## 6. 运行状态中控制选中物体移动/旋转
+## 6. 运行状态中控制选中物体移动/旋转（刚体 kinematic 控制已完成）
 
 可以设计，但建议区分两类行为。
 
-当前暂停编辑函数都以 `editorIsPaused()` 作为入口保护：
+原先暂停编辑函数都以 `editorIsPaused()` 作为入口保护；当前已放宽刚体的平移/旋转，香肠本体仍只允许暂停编辑：
 
-- `translateSelectedEditorObject()`
-- `rotateSelectedEditorObjectY()`
-- `scaleSelectedEditorObject()`
-- `addEditorBox()`
-- `deleteSelectedEditorObject()`
+- `translateSelectedEditorObject()`：刚体运行中可用，香肠仍需暂停。
+- `rotateSelectedEditorObjectAroundGlobalAxis()`：刚体运行中可用，香肠仍需暂停。
+- `scaleSelectedEditorObject()`：仍限暂停编辑。
+- `stretchSelectedBoxLocal()`：仍限暂停编辑。
+- `addEditorBox()` / `addEditorSphere()` / `addEditorCone()` / `deleteSelectedEditorObject()`：仍限暂停编辑。
 
-运行中控制建议：
+运行中控制建议：当前已完成的是对固定/静态障碍的 kinematic 直接编辑；动态刚体速度命令仍是后续项。
 
 | 模式 | 适用对象 | 行为 | 风险 |
 | --- | --- | --- | --- |
@@ -202,12 +203,12 @@
 
 ## 推荐实施顺序
 
-1. 清理快捷键：移除 `0/1/5/9` 柔软度预设；实现 `z/x/c` 全局轴单向旋转；同步 `OP.md`、`README.md`。
-2. 重构新增物体工厂：先支持 box/sphere，并把 fixed/dynamic 作为参数保存在编辑表。
-3. 先做盒体局部方向拉伸：正/左/上三方向，保证视觉和 box 碰撞一致。
+1. 清理快捷键：移除 `0/1/5/9` 柔软度预设；实现 `z/x/c` 全局轴单向旋转；同步 `OP.md`、`README.md`。（已完成）
+2. 重构新增物体工厂：先支持 box/sphere，并把 fixed/dynamic 作为参数保存在编辑表。（已完成，另已补锥体）
+3. 先做盒体局部方向拉伸：正/左/上三方向，保证视觉和 box 碰撞一致。（已完成）
 4. 接入 PBD 刚体 step：让非固定新增物体真正受重力；处理 TimeManager 只推进一次。
 5. 增加弯滑轨/直滑轨工厂：复用半管 mesh + SDF 生成逻辑，避免视觉和碰撞分离。
-6. 增加运行中运动控制：动态物体用速度/角速度，静态障碍用小步 kinematic transform。
+6. 增加运行中运动控制：静态/固定刚体的小步 kinematic transform 已完成；动态物体速度/角速度控制未完成。
 7. 单独设计粘附系统：先做 `stickiness`，再考虑是否需要内部 `viscosity`。
 
 ## 实现后必须同步的文档

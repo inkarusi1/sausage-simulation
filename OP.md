@@ -25,10 +25,10 @@
 | `s` | 单步执行 | `Demos/StiffRodsDemos/DirectPositionBasedSolverForStiffRodsDemo.cpp` |
 | `-` / `_` | 降低 softness | `SausageCourseDemo`、`SausagePhysicsCourseDemo`、`SausageRodCourseDemo`、`SausageRodEditorDemo` |
 | `+` / `=` | 提高 softness | `SausageCourseDemo`、`SausagePhysicsCourseDemo`、`SausageRodCourseDemo`、`SausageRodEditorDemo` |
-| `0` | softness 设为 0 | Sausage 系列 demo |
-| `1` | softness 设为 10 | Sausage 系列 demo，同时也可能触发 MiniGL 的数字键视图旋转逻辑 |
-| `5` | softness 设为 50 | Sausage 系列 demo |
-| `9` | softness 设为 100 | Sausage 系列 demo |
+| `0` | softness 设为 0 | Sausage 系列旧 demo；`SausageRodEditorDemo` 已移除数字预设 |
+| `1` | softness 设为 10 | Sausage 系列旧 demo，同时也可能触发 MiniGL 的数字键视图旋转逻辑；`SausageRodEditorDemo` 已移除数字预设 |
+| `5` | softness 设为 50 | Sausage 系列旧 demo；`SausageRodEditorDemo` 已移除数字预设 |
+| `9` | softness 设为 100 | Sausage 系列旧 demo；`SausageRodEditorDemo` 已移除数字预设 |
 
 这些 demo 特有键不一定影响 `SceneLoaderDemo`，但如果以后把编辑器做成通用 `DemoBase` 功能，仍应避免直接复用。
 
@@ -50,22 +50,23 @@
 
 | 输入 | 暂停编辑用途 | 作用对象 | 与原有操作的区分 |
 | --- | --- | --- | --- |
-| 左键拖动，无修饰键 | 选择最近的可编辑对象并平移 | 香肠、平台、两个圆环、半管滑轨、编辑器新增盒体 | 只在暂停时由 `MiniGL::addMousePressFunc/addMouseMoveFunc` 抢占；运行时仍保留原 viewer 行为。 |
+| 左键拖动，无修饰键 | 选择最近的可编辑对象并平移 | 香肠、平台、两个圆环、半管滑轨、编辑器新增盒体/球体 | 只在暂停时由 `MiniGL::addMousePressFunc/addMouseMoveFunc` 抢占；运行时仍保留原 viewer 行为。 |
 | `q` | 切换选中对象 | 可编辑对象列表 | 未占用原有高风险键；只在暂停时生效。 |
 | `i` / `k` | 沿 y 轴上/下移动 | 当前选中对象 | 不使用方向键，避免和全局视图平移冲突。 |
 | `j` / `l` | 沿 x 轴左/右移动 | 当前选中对象 | 不使用方向键，避免和全局视图平移冲突。 |
 | `u` / `o` | 沿 z 轴前/后移动 | 当前选中对象 | 避开 `A`/`Y` 这类源码级相机移动键。 |
-| `z` / `x` | 绕 y 轴逆/顺时针旋转 | 当前选中对象 | 不复用 Alt+左键，避免和相机旋转混淆。 |
-| `[` / `]` | 缩小/放大盒体类对象 | 平台、编辑器新增盒体 | 只对盒体碰撞对象开放；SDF 圆环/滑轨不运行时缩放，避免视觉与碰撞场错位。 |
-| `n` | 新增一个带 box 碰撞的盒体 | 编辑器新增盒体 | 新增物体会登记到编辑器对象表和碰撞检测对象列表。 |
-| `d` | 删除当前编辑器新增盒体 | 仅 `n` 新增的盒体 | 不删除原始场景对象，避免破坏原场景索引、约束和碰撞对象引用。 |
+| `z` / `x` / `c` | 分别绕全局 Z/X/Y 轴正向旋转 | 当前选中对象 | 不复用 Alt+左键，避免和相机旋转混淆。 |
+| `[` / `]` | 缩小/放大盒体或球体 | 平台、编辑器新增盒体/球体 | 盒体同步 box 碰撞；球体同步 sphere 碰撞；SDF 圆环/滑轨不运行时缩放，避免视觉与碰撞场错位。 |
+| `f` / `g` / `h` | 沿局部前/左/上方向拉伸盒体 | 平台、编辑器新增盒体 | 从对应一侧拉伸并平移中心，保持视觉盒体与 box 碰撞一致。 |
+| `n` / `m` | 新增一个带 box/sphere 碰撞的盒体/球体 | 编辑器新增盒体/球体 | 新增物体会登记到编辑器对象表和碰撞检测对象列表。 |
+| `d` | 删除当前编辑器新增对象 | 仅 `n`/`m` 新增的对象 | 不删除原始场景对象，避免破坏原场景索引、约束和碰撞对象引用。 |
 
 注意：
 
 - Space 仍然只使用原有暂停/继续功能；新增编辑器不重新定义 Space。
 - `r` 仍保留为 reset，不作为编辑器删除或撤销。
 - `w`、ESC、方向键、鼠标滚轮、中键拖动和修饰键左键操作没有被新增编辑器占用。
-- 数字键仍用于 Sausage 系列柔软度预设，新增编辑功能没有继续占用数字键。
+- 数字键在 `SausageRodEditorDemo` 中不再用于柔软度预设，避免继续叠加 MiniGL 数字键风险；其他 Sausage 旧 demo 仍可能保留数字预设。
 
 ## 后续新增快捷键建议
 
